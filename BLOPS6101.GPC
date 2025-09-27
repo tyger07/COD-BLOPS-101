@@ -1,0 +1,857 @@
+#pragma METAINFO("COD BLOPS 6 101", 1, 5, "various")
+/* Optimized GPC2 Script for Call of Duty: Black Ops 6
+ * Features: Auto Sprint, Slide Cancel, Turbo Melee, Bunny Hop, Rapid Fire, Polar Aim Assist, Trigger Jitter, Auto Hold Breath, Auto Reload Cancel, Drop Shot
+ * Settings: Tactical/Default/Tactical Flipped/Default Flipped layouts, configurable via Gtuner IV
+#include <PS4.gph>
+<cfgdesc>
+[Gamepack Info]
+control = info
+color = #1E90FF
+shortdesc = <<<MULTILINE
+<b>Call of Duty: Black Ops 6 Gamepack</b>
+First of all, thanks to RedbeardCrunch, J2Kbr, Layman, Scachi, Antithesis, ETB, and Dione. This is a mashup of published code from those sources.
+
+Optimized script with Auto Sprint, Slide Cancel, Turbo Melee, Bunny Hop, Rapid Fire, Polar Aim Assist, Trigger Jitter, Auto Hold Breath, Auto Reload Cancel, Drop Shot, and Recoil control.
+
+<b>Recommended Settings:</b>
+<u>Button Layout:</u> Tactical, Tactical Flipped, Default, or Default Flipped (select below)
+<u>Crouch:</u> Toggle
+<u>Sprint Assist:</u> Off
+<u>Movement:</u> Hybrid
+<u>Aim Assist:</u> Standard/Black Ops
+<u>Aim Response Curve:</u> Dynamic/Standard
+
+<b>LED Indicator:</b>
+<u>Green, Blue, Yellow, Red:</u> Aim assist strength. Default aim assist values are at lowest end of blue range which is where sticky aim starts.
+<u>Pink blinking:</u> ADS toggled off (recoil control and aim assist for hip fire too).
+
+<b>Controls:</b>
+All mods toggled via Gamepack Configurator and some via controller where noted below.
+
+<u>Toggle aim assist boost:</u> Press aim and fire button + lethal button.
+<u>Adjust aim assist strength:</u> <u>When aim assist toggled enabled:</u> Press aim and fire button + dpad up or down.
+<u>Adjust recoil vertical:</u> <u>When aim assist toggled disabled:</u> Press aim and fire button + dpad up or down.
+<u>Adjust recoil horizontal:</u> Press aim and fire button + dpad left or right.
+<u>Toggle hip fire recoil control and hip fire aim assist:</u> Press aim and fire button + tactical button.
+<u>Drop Shot:</u> Circle/B press when left stick is backwards.
+<u>Slide Cancel:</u> RS/R3 during sprint (left stick forward).
+<u>Auto Reload Cancel:</u> Triangle/Y press when left stick is backwards.
+<u>Bunny Hop:</u> Cross/A press when left stick is forward.
+
+<b>Note:</b> Slide Cancel and Bunny Hop use left stick forward; Auto Reload Cancel and Drop Shot use left stick backward.
+MULTILINE
+
+[Mod Toggles]
+control = info
+color = #32CD32
+shortdesc = Enable or disable script mods
+collapsible = 1
+
+[Rapid Fire]
+group = true
+control = checkbox
+byteoffset = 0
+bitsize = 8
+default = 0
+item = Enable Rapid Fire (R2/RT or R1/RB spam)
+
+[Aim Assist]
+group = true
+control = checkbox
+byteoffset = 1
+bitsize = 8
+default = 1
+item = Enable Polar Aim Assist
+
+[Trigger Jitter]
+group = true
+control = checkbox
+byteoffset = 2
+bitsize = 8
+default = 0
+item = Enable Trigger Jitter (L2/LT or L1/LB pulse, Full ADS when aiming+firing)
+
+[Hold Breath]
+group = true
+control = checkbox
+byteoffset = 3
+bitsize = 8
+default = 0
+item = Enable Auto Hold Breath (L3/LS during ADS)
+
+[Auto Sprint]
+group = true
+control = checkbox
+byteoffset = 4
+bitsize = 8
+default = 0
+item = Enable Auto Sprint 
+
+[Slide Cancel]
+group = true
+control = checkbox
+byteoffset = 5
+bitsize = 8
+default = 0
+item = Enable Slide Cancel 
+
+[Turbo Melee]
+group = true
+control = checkbox
+byteoffset = 6
+bitsize = 8
+default = 0
+item = Enable Turbo Melee 
+
+[Bunny Hop]
+group = true
+control = checkbox
+byteoffset = 7
+bitsize = 8
+default = 0
+item = Enable Bunny Hop 
+
+[Auto Reload Cancel]
+group = true
+control = checkbox
+byteoffset = 8
+bitsize = 8
+default = 0
+item = Enable Auto Reload Cancel (Triangle/Y press when left stick is backwards)
+
+[Drop Shot]
+group = true
+control = checkbox
+byteoffset = 9
+bitsize = 8
+default = 0
+item = Enable Drop Shot (Circle/B press when left stick is backwards)
+
+[Button Layout]
+group = true
+control = combobox
+byteoffset = 14
+bitsize = 8
+default = 0
+item = Tactical
+item = Default
+item = Tactical Flipped
+item = Default Flipped
+shortdesc       = <<<MULTILINE
+
+<b>Button Layout:</b>
+Select your controller button layout
+MULTILINE
+
+[Aim Assist Settings]
+control = info
+color = #FFA500
+collapsible = 1
+shortdesc       = <<<MULTILINE
+Adjust in-game. Interactive configuration. Autosave.
+<u>Enable/Disable:</u> Hold aim and fire + press lethal button.
+<u>When enabled:</u> <u>Adjust Strength:</u> Hold aim and fire + press up or down dpad.
+
+<b>Adjust Polar Aim Assist strength:</b>
+2.0 while aiming and firing is not very annoying, but not very sticky.
+Stickiness starts around 4.5.
+6.0 is pretty sticky without being crazy.
+Adjust to your preference.
+
+MULTILINE
+
+[Aim Fire Strength]
+group = true
+control = spinboxf
+byteoffset = 10
+bitsize = 16
+default = 450
+minimum = 0
+maximum = 1000
+step = 100
+decimals = 2
+shortdesc = Aim Assist strength when firing (0.0 to 10.0).
+
+[Max Aim Strength]
+group = true
+control = spinboxf
+byteoffset = 12
+bitsize = 16
+default = 600
+minimum = 0
+maximum = 1500
+step = 100
+decimals = 2
+shortdesc = Aim Assist strength when not firing (0.0 to 15.0).
+
+[Toggle ADS]
+group = true
+shortdesc       = <<<MULTILINE
+
+<b>Toggle ADS:</b>
+Adjust in-game. Interactive configuration. Autosave.
+<u>Toggle ADS:</u> Hold aim and fire + press tactical button.
+
+<u>Enabled:</u> Aim Assist and Anti-Recoil control only while holding aim down sight button. Use for long-distanced game modes where accuracy is needed and for game modes without lots of vehicles or parachuting.
+<u>Disabled:</u> Aim Assist and Anti-Recoil control affect hip fire too. Use for short-distanced game modes where quick kills are required, vehicle and parachuting shake will not distract you, and where accuracy of jumping through windows is not a factor.
+
+<b>Note:</B> Disabled will negatively affect camera while driving, and will be shakey while running.
+
+MULTILINE
+byteoffset      = 27
+bitsize         = 8
+control         = checkbox
+default         = 1
+item            = Enable
+
+[Sticknoise]
+group = true
+shortdesc       = <<<MULTILINE
+
+<b>Stick Noise (Dead Zone):</b>
+If you want to tweak this, set it to the max value of your sticks resting position values. Use the "Device Monitor" to examine them. Set to minimum if you want sticky aim even when resting. Increase value to eliminate screen shake when resting (but not sticky).
+MULTILINE
+byteoffset      = 15
+bitsize         = 32
+control         = spinboxf
+default         = 0
+minimum         = 0
+maximum         = 2000
+step            = 1
+decimals        = 2
+
+[Universal Anti-Recoil]
+control = info
+color = #FFA500
+collapsible = 1
+shortdesc       = <<<MULTILINE
+Adjust in-game. Interactive configuration. Autosave.
+<u>Horizontal:</u> Hold both triggers + press left or right dpad
+<u>While aim assist is disabled:</u> <u>Vertical:</u> Hold aim and fire + press up or down dpad
+MULTILINE
+control         = info
+ 
+[Anti Recoil Vertical]
+group = true
+shortdesc       = <<<MULTILINE
+
+<b>Recoil Control:</b>
+Vertical recoil compensation
+MULTILINE
+byteoffset      = 19
+bitsize         = 32
+control         = spinboxf
+default         = 230
+minimum         = -1000
+maximum         = 1000
+step            = 1
+decimals        = 1
+ 
+[Anti Recoil Horizontal]
+group = true
+shortdesc       = Horizontal recoil compensation
+byteoffset      = 23
+bitsize         = 32
+control         = spinboxf
+default         = 0
+minimum         = -1000
+maximum         = 1000
+step            = 1
+decimals        = 1
+
+</cfgdesc>
+*/
+
+// --- Configurable Variables ---
+bool enable_rapid_fire, enable_aim_assist, enable_trigger_jitter, enable_hold_breath;
+bool enable_auto_sprint, enable_slide_cancel, enable_turbo_melee, enable_bunny_hop;
+bool enable_auto_reload_cancel, enable_drop_shot;
+uint8 button_layout;
+int32 hold_breath_timer = 0;
+fix32 TOMAAA_MaxStrength, TOMAAA_AimFireStrength, TOMAAA_CurrentStrength = 5.0;
+fix32 TOMAAA_MinStrength = 5.0, CurveBlend = 50.0, HairThreshold = 1.0;
+int32 TOMAAA_MaxTimer = 200, TOMAAA_MicroMoveInterval = 20;
+int32 TOMAAA_Timer = 0, TOMAAA_MicroMoveTimer = 0;
+fix32 MicroX, MicroY, RS_X, RS_Y, raw_RS_X, raw_RS_Y, final_RX, final_RY;
+fix32 absX, absY, curvedX, curvedY;
+fix32 temp_x, linear_x, temp_y, linear_y;
+int32 signX, signY, rotationIndex = 0, rotationSpeed = 1;
+int32 sineTable[16];
+const int32 RAPID_FIRE_RATE = 30;
+uint8 BUTTON_FIRE, BUTTON_AIM, BUTTON_SLIDE, BUTTON_JUMP, BUTTON_TACTICAL, BUTTON_LETHAL, BUTTON_MELEE, BUTTON_RELOAD;
+bool slide_cancel_active = FALSE, reload_cancel_active = FALSE, drop_shot_active = FALSE;
+fix32 stick_lx, stick_ly;
+const bool HairTriggers = TRUE;
+int16 temp_var1, temp_var2;
+static uint32 LEDLastTime = 0, MessageLastTime = 0;
+fix32 RECOIL_V = 23.0;
+fix32 RECOIL_H = 0.0;
+fix32 ADJUSTMENT_STEP = 1.0;
+fix32 RY;
+fix32 RX;
+uint8 TOGGLE_ADS = TRUE;
+fix32 STICK_NOISE = 0.00;
+bool RedLED = FALSE, GreenLED = FALSE, BlueLED = FALSE, PinkLED = FALSE, LEDUpdate = TRUE, PMUpdate = FALSE;
+
+// --- Custom Sine/Cosine Functions ---
+fix32 mySin(int32 angle) {
+    return (fix32)sineTable[(angle / 23) & 15] / 127.0;
+}
+
+fix32 myCos(int32 angle) {
+    return (fix32)sineTable[((angle / 23 + 4) & 15)] / 127.0;
+}
+
+// --- PMEM Read Function ---
+fix32 pmem_read_int16tofix32(uint8 pmem_location) {
+    int16 valInt16;
+    pmem_load();
+    pmem_read(pmem_location, &valInt16);
+    return (fix32)valInt16 / 100.0;
+}
+
+// --- Map (Ratio Scale Value) Function ---
+int map(int x, int in_min, int in_max, int out_min, int out_max) {
+	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+// Function to update the persistent memory, but not faster than 1000ms (1 second)
+void PMSave() {
+    static uint32 PMSLast = 0;
+    if (PMUpdate && PMSLast < system_time())
+    {
+		printf("enable_aim_assist: %d", enable_aim_assist);
+		printf("STICK_NOISE: %.04f", STICK_NOISE);
+		printf("RECOIL_V: %.04f", RECOIL_V);
+		printf("RECOIL_H: %.04f", RECOIL_H);
+		printf("ADJUSTMENT_STEP: %.04f", ADJUSTMENT_STEP);
+		printf("TOGGLE_ADS: %d", TOGGLE_ADS);
+        PMUpdate = FALSE;
+        printf("ic update");
+        printf("GCMD:InteractiveConfiguration.Refresh");
+        PMSLast = system_time() + 1000;
+        pmem_save();
+    }
+}
+
+// AntiRecoil function
+void AntiRecoil (uint8 axis, fix32 recoil)
+{
+     RY = get_actual(STICK_1_Y);
+     RX = get_actual(STICK_1_X);
+ 
+    if (get_val(BUTTON_FIRE) && (sqrt(RX*RX + RY*RY)) <= abs(recoil))
+    {
+        if(abs(RY) <= abs(recoil))
+        {
+            set_val(axis,(recoil * (100.0 - abs(get_val(axis)))) / 100.0 + get_val(axis));
+        }
+    }
+}
+
+// --- Combos ---
+combo AutoSprint {
+    set_val(BUTTON_9, 100.0);
+    wait(9);
+    set_val(BUTTON_9, 0.0);
+    wait(9);
+}
+
+combo SlideCancel {
+    set_val(BUTTON_SLIDE, 100.0);
+    wait(40);
+    set_val(BUTTON_SLIDE, 0.0);
+    wait(20);
+    set_val(BUTTON_JUMP, 100.0);
+    wait(40);
+    set_val(BUTTON_JUMP, 0.0);
+    slide_cancel_active = FALSE;
+}
+
+combo TurboMelee {
+    set_val(BUTTON_MELEE, 100.0);
+    wait(50);
+    set_val(BUTTON_MELEE, 0.0);
+    wait(50);
+    set_val(BUTTON_MELEE, 100.0);
+    wait(50);
+    set_val(BUTTON_MELEE, 0.0);
+}
+
+combo BunnyHop {
+    set_val(BUTTON_JUMP, 100.0);
+    wait(40);
+    set_val(BUTTON_JUMP, 0.0);
+    wait(80);
+    set_val(BUTTON_JUMP, 100.0);
+    wait(40);
+    set_val(BUTTON_JUMP, 0.0);
+}
+
+combo RapidFire {
+    set_val(BUTTON_FIRE, 100.0);
+    wait(RAPID_FIRE_RATE);
+    set_val(BUTTON_FIRE, 0.0);
+    wait(RAPID_FIRE_RATE);
+}
+
+combo TriggerJitterBoost {
+    set_val(BUTTON_AIM, 100.0);
+    wait(60);
+    set_val(BUTTON_AIM, 0.0);
+    wait(20);
+    set_val(BUTTON_AIM, 100.0);
+    wait(40);
+}
+
+combo ReloadCancel {
+    wait(300);
+    set_val(BUTTON_RELOAD, 100.0);
+    wait(50);
+    set_val(BUTTON_RELOAD, 0.0);
+    reload_cancel_active = FALSE;
+}
+
+combo DropShot {
+    set_val(BUTTON_SLIDE, 100.0);
+    wait(100);
+    set_val(BUTTON_SLIDE, 0.0);
+    drop_shot_active = FALSE;
+}
+
+// --- Initialization ---
+init {
+    sineTable[0] = 0; sineTable[1] = 49; sineTable[2] = 90; sineTable[3] = 120;
+    sineTable[4] = 127; sineTable[5] = 120; sineTable[6] = 90; sineTable[7] = 49;
+    sineTable[8] = 0; sineTable[9] = -49; sineTable[10] = -90; sineTable[11] = -120;
+    sineTable[12] = -127; sineTable[13] = -120; sineTable[14] = -90; sineTable[15] = -49;
+
+    pmem_load();
+    pmem_read(0, &enable_rapid_fire);
+    pmem_read(1, &enable_aim_assist);
+    pmem_read(2, &enable_trigger_jitter);
+    pmem_read(3, &enable_hold_breath);
+    pmem_read(4, &enable_auto_sprint);
+    pmem_read(5, &enable_slide_cancel);
+    pmem_read(6, &enable_turbo_melee);
+    pmem_read(7, &enable_bunny_hop);
+    pmem_read(8, &enable_auto_reload_cancel);
+    pmem_read(9, &enable_drop_shot);
+    pmem_read(14, &button_layout);
+	pmem_read(15, &STICK_NOISE);
+    pmem_read(19, &RECOIL_V);
+    pmem_read(23, &RECOIL_H);
+    pmem_read(27, &TOGGLE_ADS);
+    TOMAAA_AimFireStrength = pmem_read_int16tofix32(10);
+    TOMAAA_MaxStrength = pmem_read_int16tofix32(12);
+
+    if (button_layout == 0) { // Tactical
+        BUTTON_FIRE = BUTTON_5; BUTTON_AIM = BUTTON_8; BUTTON_JUMP = BUTTON_16;
+        BUTTON_TACTICAL = BUTTON_4; BUTTON_LETHAL = BUTTON_7; BUTTON_MELEE = BUTTON_6;
+        BUTTON_SLIDE = BUTTON_6; BUTTON_RELOAD = BUTTON_14;
+    } else if (button_layout == 1) { // Default
+        BUTTON_FIRE = BUTTON_5; BUTTON_AIM = BUTTON_8; BUTTON_JUMP = BUTTON_16;
+        BUTTON_TACTICAL = BUTTON_4; BUTTON_LETHAL = BUTTON_7; BUTTON_MELEE = BUTTON_15;
+		BUTTON_SLIDE = BUTTON_15; BUTTON_RELOAD = BUTTON_14;
+    } else if (button_layout == 2) { // Tactical Flipped
+        BUTTON_FIRE = BUTTON_4; BUTTON_AIM = BUTTON_7; BUTTON_JUMP = BUTTON_16;
+        BUTTON_TACTICAL = BUTTON_8; BUTTON_LETHAL = BUTTON_5; BUTTON_MELEE = BUTTON_15;
+		BUTTON_SLIDE = BUTTON_6; BUTTON_RELOAD = BUTTON_14;
+    } else { // Default Flipped
+        BUTTON_FIRE = BUTTON_4; BUTTON_AIM = BUTTON_7; BUTTON_JUMP = BUTTON_16;
+        BUTTON_TACTICAL = BUTTON_8; BUTTON_LETHAL = BUTTON_5; BUTTON_MELEE = BUTTON_15;
+		BUTTON_SLIDE = BUTTON_15; BUTTON_RELOAD = BUTTON_14;
+    }
+
+	// just to make sure the value is in the correct value range
+    STICK_NOISE = clamp(STICK_NOISE,0.0,255.0);
+    RECOIL_V = clamp(RECOIL_V,-100.0,100.0);
+    RECOIL_H = clamp(RECOIL_H,-100.0,100.0);
+    ADJUSTMENT_STEP = clamp(ADJUSTMENT_STEP,1.0,10.0);
+
+    port_permit_ffb(PORT_USB_A);
+	printf("enable_rapid_fire: %d", enable_rapid_fire);
+    printf("enable_aim_assist: %d", enable_aim_assist);
+    printf("enable_trigger_jitter: %d", enable_trigger_jitter);
+    printf("enable_hold_breath: %d", enable_hold_breath);
+    printf("enable_auto_sprint: %d", enable_auto_sprint);
+    printf("enable_slide_cancel: %d", enable_slide_cancel);
+    printf("enable_turbo_melee: %d", enable_turbo_melee);
+    printf("enable_bunny_hop: %d", enable_bunny_hop);
+    printf("enable_reload_cancel: %d", enable_auto_reload_cancel);
+    printf("enable_drop_shot: %d", enable_drop_shot);
+    printf("button_layout: %d", button_layout);
+	printf("STICK_NOISE: %.04f", STICK_NOISE);
+    printf("RECOIL_V: %.04f", RECOIL_V);
+    printf("RECOIL_H: %.04f", RECOIL_H);
+    printf("ADJUSTMENT_STEP: %.04f", ADJUSTMENT_STEP);
+    printf("TOGGLE_ADS: %d", TOGGLE_ADS);
+}
+
+// --- Main Logic ---
+main {
+    // Cache stick values
+    stick_lx = get_val(STICK_2_X);
+    stick_ly = get_val(STICK_2_Y);
+    raw_RS_X = get_val(STICK_1_X);
+    raw_RS_Y = get_val(STICK_1_Y);
+
+    // Hair Triggers
+    if (HairTriggers) {
+        if (get_val(BUTTON_FIRE) > HairThreshold) set_val(BUTTON_FIRE, 100.0);
+        if (get_val(BUTTON_AIM) > HairThreshold) set_val(BUTTON_AIM, 100.0);
+    }
+
+    // Update Hold Breath Timer
+    hold_breath_timer = is_active(BUTTON_AIM) ? hold_breath_timer + 10 : 0;
+
+	// Pink LED off when Toggle enabled
+	if ( TOGGLE_ADS ) {
+		if ( PinkLED == TRUE ) {
+			led_set(LED_4, 0.0, 0);
+			PinkLED = FALSE;
+			LEDLastTime = system_time() - 2000;
+		}
+	// Pink LED flashes when Toggle disabled
+	} else {
+		if (LEDLastTime > system_time())
+		{
+			if ( PinkLED == FALSE ) {
+				led_set(LED_4, 0.5, 0);
+				PinkLED = TRUE;
+			}
+		} else if (LEDLastTime < system_time() - 1000) {
+			LEDLastTime = system_time() + 1000;
+		} else {
+			if ( PinkLED == TRUE ) {
+				led_set(LED_4, 0.0, 0);
+				PinkLED = FALSE;
+			}
+		}
+	}
+
+    // Polar Aim Assist
+    if (enable_aim_assist) {
+		// AIM Assist LEDs On based on Aim Assist strength
+		if ( LEDUpdate == TRUE ) {
+			// Green
+			if ((int16) TOMAAA_AimFireStrength < 11) {
+				if ( BlueLED == TRUE ) {
+					led_set(LED_1, 0.0, 0);
+					BlueLED = FALSE;
+				}
+				if ( RedLED == TRUE ) {
+					led_set(LED_2, 0.0, 0);
+					RedLED = FALSE;
+				}
+				if ( GreenLED == FALSE ) {
+					led_set(LED_3, 1.0, 0);
+					GreenLED = TRUE;
+				}
+			// Blue
+			} else if ((int16) TOMAAA_AimFireStrength >= 11 && (int16) TOMAAA_AimFireStrength <= 14) {
+				if ( BlueLED == FALSE ) {
+					led_set(LED_1, 1.0, 0);
+					BlueLED = TRUE;
+				}
+				if ( RedLED == TRUE ) {
+					led_set(LED_2, 0.0, 0);
+					RedLED = FALSE;
+				}
+				if ( GreenLED == TRUE ) {
+					led_set(LED_3, 0.0, 0);
+					GreenLED = FALSE;
+				}
+			// Yellow
+			} else if ((int16) TOMAAA_AimFireStrength > 14 && (int16) TOMAAA_AimFireStrength <= 18) {
+				if ( BlueLED == TRUE ) {
+					led_set(LED_1, 0.0, 0);
+					BlueLED = FALSE;
+				}
+				if ( RedLED == FALSE ) {
+					led_set(LED_2, 0.5, 0);
+					RedLED = TRUE;
+				}
+				if ( GreenLED == FALSE ) {
+					led_set(LED_3, 0.5, 0);
+					GreenLED = TRUE;
+				}
+			// Red
+			} else if ((int16) TOMAAA_AimFireStrength > 18 && (int16) TOMAAA_AimFireStrength <= 25) {
+				// turn existing low brightness Red off
+				if ( RedLED == TRUE ) {
+					led_set(LED_2, 0.0, 0);
+					RedLED = FALSE;
+				}
+				if ( BlueLED == TRUE ) {
+					led_set(LED_1, 0.0, 0);
+					BlueLED = FALSE;
+				}
+				// turn red on brighter
+				if ( RedLED == FALSE ) {
+					led_set(LED_2, 1.0, 0);
+					RedLED = TRUE;
+				}
+				if ( GreenLED == TRUE ) {
+					led_set(LED_3, 0.0, 0);
+					GreenLED = FALSE;
+				}
+			}
+			LEDUpdate = FALSE;
+		}
+		
+		// The Magic shake
+        raw_RS_X = get_val(STICK_1_X);
+        raw_RS_Y = get_val(STICK_1_Y);
+
+        absX = raw_RS_X < 0.0 ? -raw_RS_X : raw_RS_X;
+        signX = raw_RS_X < 0.0 ? -1 : 1;
+        absY = raw_RS_Y < 0.0 ? -raw_RS_Y : raw_RS_Y;
+        signY = raw_RS_Y < 0.0 ? -1 : 1;
+        curvedX = (absX * absX) / 128.0;
+        RS_X = ((curvedX * CurveBlend) + (absX * (100.0 - CurveBlend))) / 100.0 * (fix32)signX;
+        curvedY = (absY * absY) / 128.0;
+        RS_Y = ((curvedY * CurveBlend) + (absY * (100.0 - CurveBlend))) / 100.0 * (fix32)signY;
+
+		// If aiming or ADS toggle disabled
+        if (is_active(BUTTON_AIM) || !TOGGLE_ADS) {
+            if (TOMAAA_Timer < TOMAAA_MaxTimer) TOMAAA_Timer += 10;
+            TOMAAA_CurrentStrength = (is_active(BUTTON_AIM) && get_val(BUTTON_FIRE) > 30.0) ? TOMAAA_AimFireStrength : TOMAAA_MinStrength + ((TOMAAA_MaxStrength - TOMAAA_MinStrength) * (fix32)TOMAAA_Timer) / (fix32)TOMAAA_MaxTimer;
+            TOMAAA_CurrentStrength = clamp(TOMAAA_CurrentStrength, TOMAAA_MinStrength, TOMAAA_MaxStrength);
+
+            if (TOMAAA_MicroMoveTimer <= 0) {
+                MicroX = ((fix32)rand() * 5.0) - 2.5;
+                MicroY = ((fix32)rand() * 5.0) - 2.5;
+                TOMAAA_MicroMoveTimer = TOMAAA_MicroMoveInterval;
+            } else {
+                TOMAAA_MicroMoveTimer -= 10;
+            }
+
+            int32 angle = rotationIndex * 23;
+            fix32 offsetX = myCos(angle) * TOMAAA_CurrentStrength;
+            fix32 offsetY = mySin(angle) * TOMAAA_CurrentStrength;
+
+            if (TOMAAA_MicroMoveTimer > (TOMAAA_MicroMoveInterval / 2)) {
+                offsetX += MicroX;
+                offsetY += MicroY;
+            }
+
+            final_RX = clamp(RS_X + offsetX, -100.0, 100.0);
+            final_RY = clamp(RS_Y + offsetY, -100.0, 100.0);
+
+            set_val(STICK_1_X, final_RX);
+            set_val(STICK_1_Y, final_RY);
+
+            rotationIndex = (rotationIndex + rotationSpeed) % 16;
+
+			// Throttle the message spam
+			if ( MessageLastTime < system_time() ) {
+				printf("Aim: RX=%f, RY=%f, Strength=%f, AimStrength=%d, MaxStrength=%d", final_RX, final_RY, TOMAAA_CurrentStrength, (int16)TOMAAA_AimFireStrength, (int16)TOMAAA_MaxStrength);
+				MessageLastTime = system_time() + 500;
+			}
+			
+        // Not aiming and ADS toggle enabled
+		} else {
+            if (TOMAAA_Timer > 0) {
+                TOMAAA_Timer -= 10;
+                if (TOMAAA_Timer < 0) TOMAAA_Timer = 0;
+                TOMAAA_CurrentStrength = TOMAAA_MinStrength + ((TOMAAA_MaxStrength - TOMAAA_MinStrength) * (fix32)TOMAAA_Timer) / (fix32)TOMAAA_MaxTimer;
+                TOMAAA_CurrentStrength = clamp(TOMAAA_CurrentStrength, TOMAAA_MinStrength, TOMAAA_MaxStrength);
+            } else {
+                TOMAAA_CurrentStrength = TOMAAA_MinStrength;
+                TOMAAA_MicroMoveTimer = 0;
+                rotationIndex = 0;
+            }
+            set_val(STICK_1_X, RS_X);
+            set_val(STICK_1_Y, RS_Y);
+        }
+	// Aim Assist not enabled
+    } else {
+		// Turn AIM Assist LEDs Off
+		if ( LEDUpdate == TRUE ) {
+			if ( BlueLED == TRUE ) {
+				led_set(LED_1, 0.0, 0);
+				BlueLED = FALSE;
+			}
+			if ( RedLED == TRUE ) {
+				led_set(LED_2, 0.0, 0);
+				RedLED = FALSE;
+			}
+			if ( GreenLED == TRUE ) {
+				led_set(LED_3, 0.0, 0);
+				GreenLED = FALSE;
+			}
+			LEDUpdate = FALSE;
+		}
+
+        TOMAAA_Timer = 0;
+        TOMAAA_CurrentStrength = TOMAAA_MinStrength;
+        TOMAAA_MicroMoveTimer = 0;
+        rotationIndex = 0;
+        set_val(STICK_1_X, get_val(STICK_1_X));
+        set_val(STICK_1_Y, get_val(STICK_1_Y));
+    }
+
+    // Auto Sprint
+    if (enable_auto_sprint && stick_ly < -20.0) combo_run(AutoSprint);
+    else combo_stop(AutoSprint);
+
+    // Slide Cancel
+    if (enable_slide_cancel && is_active(BUTTON_SLIDE) && stick_ly < -20.0 && !drop_shot_active) {
+        if (!slide_cancel_active) {
+            slide_cancel_active = TRUE;
+            combo_run(SlideCancel);
+        }
+    } else {
+        slide_cancel_active = FALSE;
+        combo_stop(SlideCancel);
+    }
+
+    // Turbo Melee
+    if (enable_turbo_melee && is_active(BUTTON_MELEE) && stick_ly >= -20.0) combo_run(TurboMelee);
+    else combo_stop(TurboMelee);
+
+    // Bunny Hop
+    if (enable_bunny_hop && is_active(BUTTON_JUMP) && stick_ly < -20.0) combo_run(BunnyHop);
+    else combo_stop(BunnyHop);
+
+    // Rapid Fire
+    if (enable_rapid_fire && is_active(BUTTON_FIRE)) combo_run(RapidFire);
+    else combo_stop(RapidFire);
+
+    // Trigger Jitter
+    if (enable_trigger_jitter) {
+        if (is_active(BUTTON_FIRE) && is_active(BUTTON_AIM)) set_val(BUTTON_AIM, 100.0);
+        else if (is_active(BUTTON_AIM)) combo_run(TriggerJitterBoost);
+        else combo_stop(TriggerJitterBoost);
+    }
+
+    // Auto Reload Cancel
+    if (enable_auto_reload_cancel && is_active(BUTTON_RELOAD) && stick_ly > 20.0 && !slide_cancel_active) {
+        if (!reload_cancel_active) {
+            reload_cancel_active = TRUE;
+            combo_run(ReloadCancel);
+        }
+    } else {
+        reload_cancel_active = FALSE;
+        combo_stop(ReloadCancel);
+    }
+
+    // Drop Shot
+    if (enable_drop_shot && is_active(BUTTON_SLIDE) && stick_ly > 20.0 && !slide_cancel_active && !drop_shot_active) {
+        drop_shot_active = TRUE;
+        combo_run(DropShot);
+    } else {
+        drop_shot_active = FALSE;
+        combo_stop(DropShot);
+    }
+
+    // Instant Response Curve
+    fix32 scaled_lx = stick_lx;
+    fix32 scaled_ly = stick_ly;
+    if (abs(stick_lx) >= 5.0) {
+        temp_x = stick_lx * CurveBlend;
+        linear_x = stick_lx * (100.0 - CurveBlend) * 2.2;
+        scaled_lx = (temp_x + linear_x) / 100.0;
+        scaled_lx = clamp(scaled_lx, -100.0, 100.0);
+    }
+    if (abs(stick_ly) >= 5.0) {
+        temp_y = stick_ly * CurveBlend;
+        linear_y = stick_ly * (100.0 - CurveBlend) * 1.8;
+        scaled_ly = (temp_y + linear_y) / 100.0;
+        scaled_ly = clamp(scaled_ly, -100.0, 100.0);
+    }
+    set_val(STICK_2_X, scaled_lx);
+    set_val(STICK_2_Y, scaled_ly);
+	
+	// adjust anti-recoil and aim assist boost realtime with controller
+    if (is_active(BUTTON_FIRE) && is_active(BUTTON_AIM)) { // Hold Both Triggers
+		// enable/disable aim assist
+		if ( event_active(BUTTON_LETHAL) ) { // ...and Press Left Bumper
+			enable_aim_assist = (!enable_aim_assist);
+            pmem_write(1, enable_aim_assist); // toggle and update the pmem value
+            LEDUpdate = TRUE;
+			PMUpdate=TRUE; // pmem and gui value throttle
+        }
+		// if aim assist enabled, up/down does aim assist
+		if (enable_aim_assist) {
+			if ( event_active(BUTTON_10) ) { // ...and Press DPAD_UP
+				if ( (int16) TOMAAA_AimFireStrength < 25 && (int16) TOMAAA_MaxStrength < 38) {
+					TOMAAA_AimFireStrength += 1.0;
+					temp_var1 = map((int16) TOMAAA_AimFireStrength, 0, 25, 0, 2560);
+					pmem_write(10,(int16) temp_var1); // update the pmem value
+					TOMAAA_MaxStrength += 1.0;
+					temp_var2 = map((int16) TOMAAA_MaxStrength, 0, 38, 0, 3741);
+					pmem_write(12,(int16) temp_var2); // update the pmem value
+					LEDUpdate = TRUE;
+					PMUpdate=TRUE; // pmem and gui value throttle
+				}
+			}
+			if ( event_active(BUTTON_11) ) { // ...and Press DPAD_DOWN
+				if ( (int16) TOMAAA_AimFireStrength > 1 && (int16) TOMAAA_MaxStrength > 1) {
+					TOMAAA_AimFireStrength -= 1.0;
+					temp_var1 = map((int16) TOMAAA_AimFireStrength, 0, 25, 0, 2560);
+					pmem_write(10,(int16) temp_var1); // update the pmem value
+					TOMAAA_MaxStrength -= 1.0;
+					temp_var2 = map((int16) TOMAAA_MaxStrength, 0, 38, 0, 3741);
+					pmem_write(12,(int16) temp_var2); // update the pmem value
+					LEDUpdate = TRUE;
+					PMUpdate=TRUE; // pmem and gui value throttle
+				}
+			}
+		// else up/down does vertical recoil
+		} else {
+			if ( event_active(BUTTON_10) ) { // ...and Press DPAD_UP
+				if ( RECOIL_V > -100.0) {
+					RECOIL_V = (RECOIL_V - ADJUSTMENT_STEP);
+					pmem_write(19,(fix32) RECOIL_V); // update the pmem value
+					PMUpdate=TRUE; // pmem and gui value throttle
+				}
+			}
+			if ( event_active(BUTTON_11) ) { // ...and Press DPAD_DOWN
+				if ( RECOIL_V < 100.0) {
+					RECOIL_V = (RECOIL_V + ADJUSTMENT_STEP);
+					pmem_write(19,(fix32) RECOIL_V); // update the pmem value
+					PMUpdate=TRUE; // pmem and gui value throttle
+				}
+			}
+		}
+        if ( event_active(BUTTON_12) ) { // ...Press DPAD_LEFT
+            if ( RECOIL_H > -100.0) {
+				RECOIL_H = (RECOIL_H - ADJUSTMENT_STEP);
+                pmem_write(23,(fix32) RECOIL_H); // update the pmem value
+                PMUpdate=TRUE; // pmem and gui value throttle
+            }
+        }
+        if ( event_active(BUTTON_13) ) { // ...and Press DPAD_RIGHT
+            if ( RECOIL_H < 100.0) {
+				RECOIL_H = (RECOIL_H + ADJUSTMENT_STEP);
+                pmem_write(23,(fix32) RECOIL_H); // update the pmem value
+                PMUpdate=TRUE; // pmem and gui value throttle
+            }
+        }
+		// enable/disable aim toggle
+        if ( event_active(BUTTON_TACTICAL) ) { // ...and Press Right Bumper
+			TOGGLE_ADS = (!TOGGLE_ADS);
+            pmem_write(27, TOGGLE_ADS); // toggle and update the pmem value
+            PMUpdate=TRUE; // pmem and gui value throttle
+        }
+    }
+    // save values when changed
+    if (PMUpdate) {
+    	PMSave();         // This function should be called on every iteration if changes are detected.
+    }
+ 
+    // DEADZONE REMOVER
+    if(abs(get_actual(STICK_1_X)) < STICK_NOISE) { set_val(STICK_1_X, 0.0); }
+    if(abs(get_actual(STICK_1_Y)) < STICK_NOISE) { set_val(STICK_1_Y, 0.0); }
+    if(abs(get_actual(STICK_2_X)) < STICK_NOISE) { set_val(STICK_2_X, 0.0); }
+    if(abs(get_actual(STICK_2_Y)) < STICK_NOISE) { set_val(STICK_2_Y, 0.0); }
+ 
+    // ANTI-RECOIL
+    if(get_val(BUTTON_FIRE) && (!TOGGLE_ADS || get_val(BUTTON_AIM)))
+    {
+        AntiRecoil(STICK_1_Y,RECOIL_V);
+        AntiRecoil(STICK_1_X,RECOIL_H);
+    }
+}
