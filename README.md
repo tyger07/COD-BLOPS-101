@@ -3,7 +3,7 @@ First of all, thanks to RedbeardCrunch, J2Kbr, Layman, Scachi, Antithesis, ETB, 
 
 Optimized script with Auto Sprint, Slide Cancel, Turbo Melee, Bunny Hop, Rapid Fire, Polar Aim Assist Boost, Trigger Jitter, Auto Hold Breath, Auto Reload Cancel, Drop Shot, and Recoil control for the <a href="https://www.consoletuner.com/products/titan-two/">Titan Two</a>.
 
-<b>Recommended Settings:</b><br/>
+<b>Recommended Game Settings:</b><br/>
 Button Layout: Tactical, Tactical Flipped, Default, or Default Flipped (select below)<br/>
 Crouch: Toggle<br/>
 Sprint Assist: Off<br/>
