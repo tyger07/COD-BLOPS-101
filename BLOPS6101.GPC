@@ -1,4 +1,4 @@
-#pragma METAINFO("COD BLOPS 6 101", 1, 6, "various")
+#pragma METAINFO("COD BLOPS 6 101", 1, 7, "various")
 /* Optimized GPC2 Script for Call of Duty: Black Ops 6
  * Features: Auto Sprint, Slide Cancel, Turbo Melee, Bunny Hop, Rapid Fire, Polar Aim Assist, Trigger Jitter, Auto Hold Breath, Auto Reload Cancel, Drop Shot
  * Settings: Tactical/Default/Tactical Flipped/Default Flipped layouts, configurable via Gtuner IV
@@ -294,15 +294,6 @@ bool TOGGLE_ADS = TRUE;
 fix32 STICK_NOISE = 0.00;
 bool RedLED = FALSE, GreenLED = FALSE, BlueLED = FALSE, PinkLED = FALSE, LEDUpdate = TRUE, PMUpdate = FALSE;
 
-// --- Custom Sine/Cosine Functions ---
-fix32 mySin(int32 angle) {
-    return (fix32)sineTable[(angle / 23) & 15] / 127.0;
-}
-
-fix32 myCos(int32 angle) {
-    return (fix32)sineTable[((angle / 23 + 4) & 15)] / 127.0;
-}
-
 // --- PMEM Read Function ---
 fix32 pmem_read_int16tofix32(uint8 pmem_location) {
     int16 valInt16;
@@ -327,21 +318,6 @@ void PMSave() {
         printf("GCMD:InteractiveConfiguration.Refresh");
         PMSLast = system_time() + 1000;
         pmem_save();
-    }
-}
-
-// AntiRecoil function
-void AntiRecoil (uint8 axis, fix32 recoil)
-{
-	RY = get_actual(STICK_1_Y);
-	RX = get_actual(STICK_1_X);
- 
-    if (get_val(BUTTON_FIRE) && (sqrt(RX*RX + RY*RY)) <= abs(recoil))
-    {
-        if(abs(RY) <= abs(recoil))
-        {
-            set_val(axis,(recoil * (100.0 - abs(get_val(axis)))) / 100.0 + get_val(axis));
-        }
     }
 }
 
@@ -534,8 +510,8 @@ main {
             }
 
             int32 angle = rotationIndex * 23;
-            fix32 offsetX = myCos(angle) * TOMAAA_CurrentStrength;
-            fix32 offsetY = mySin(angle) * TOMAAA_CurrentStrength;
+			fix32 offsetX = ((fix32)sineTable[((angle / 23 + 4) & 15)] / 127.0) * TOMAAA_CurrentStrength;
+			fix32 offsetY = ((fix32)sineTable[(angle / 23) & 15] / 127.0) * TOMAAA_CurrentStrength;
 
             if (TOMAAA_MicroMoveTimer > (TOMAAA_MicroMoveInterval / 2)) {
                 offsetX += MicroX;
@@ -814,8 +790,25 @@ main {
     // ANTI-RECOIL
     if(get_val(BUTTON_FIRE) && (!TOGGLE_ADS || get_val(BUTTON_AIM)))
     {
-        AntiRecoil(STICK_1_Y,RECOIL_V);
-        AntiRecoil(STICK_1_X,RECOIL_H);
+		RY = get_actual(STICK_1_Y);
+		RX = get_actual(STICK_1_X);
+
+		// vertical
+		if (get_val(BUTTON_FIRE) && (sqrt(RX*RX + RY*RY)) <= abs((fix32)RECOIL_V))
+		{
+			if(abs(RY) <= abs((fix32)RECOIL_V))
+			{
+				set_val((uint8)STICK_1_Y,((fix32)RECOIL_V * (100.0 - abs(get_val((uint8)STICK_1_Y)))) / 100.0 + get_val((uint8)STICK_1_Y));
+			}
+		}
+		// horizontal
+		if (get_val(BUTTON_FIRE) && (sqrt(RX*RX + RY*RY)) <= abs((fix32)RECOIL_H))
+		{
+			if(abs(RY) <= abs((fix32)RECOIL_H))
+			{
+				set_val((uint8)STICK_1_X,((fix32)RECOIL_H * (100.0 - abs(get_val((uint8)STICK_1_X)))) / 100.0 + get_val((uint8)STICK_1_X));
+			}
+		}
     }
 	//printf("Loop Time: %f", elapsed_time());
 }
