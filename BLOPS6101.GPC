@@ -1,5 +1,5 @@
-#pragma METAINFO("COD BLOPS 6 101", 1, 7, "various")
-/* Optimized GPC2 Script for Call of Duty: Black Ops 6
+#pragma METAINFO("COD BLOPS 101", 1, 8, "various")
+/* Optimized GPC2 Script for Call of Duty: Black Ops
  * Features: Auto Sprint, Slide Cancel, Turbo Melee, Bunny Hop, Rapid Fire, Polar Aim Assist, Trigger Jitter, Auto Hold Breath, Auto Reload Cancel, Drop Shot
  * Settings: Tactical/Default/Tactical Flipped/Default Flipped layouts, configurable via Gtuner IV
 
@@ -9,7 +9,7 @@
 control = info
 color = #1E90FF
 shortdesc = <<<MULTILINE
-<b>Call of Duty: Black Ops 6 Gamepack</b>
+<b>Call of Duty: Black Ops Gamepack</b>
 First of all, thanks to RedbeardCrunch, J2Kbr, Layman, Scachi, Antithesis, ETB, and Dione. This is a mashup of published code from those sources.
 
 Optimized script with Auto Sprint, Slide Cancel, Turbo Melee, Bunny Hop, Rapid Fire, Polar Aim Assist, Trigger Jitter, Auto Hold Breath, Auto Reload Cancel, Drop Shot, and Recoil control.
@@ -210,7 +210,7 @@ group = true
 shortdesc       = <<<MULTILINE
 
 <b>Stick Noise (Dead Zone):</b>
-If you want to tweak this, set it to the max value of your sticks resting position values. Use the "Device Monitor" to examine them. Set to minimum if you want sticky aim even when resting. Increase value to eliminate screen shake when resting (but not sticky).
+If you want to tweak this, set it to the max value of your sticks resting position values. Use the "Device Monitor" to examine them. Set to minimum if you want sticky aim even when resting. Increasing values high enough will eliminate screen shake when resting with toggle ADS disabled (but also removes stickiness).
 MULTILINE
 byteoffset      = 15
 bitsize         = 32
@@ -270,21 +270,21 @@ bool enable_auto_reload_cancel, enable_drop_shot;
 uint8 button_layout;
 int32 hold_breath_timer = 0;
 fix32 TOMAAA_MaxStrength, TOMAAA_AimFireStrength, TOMAAA_CurrentStrength = 5.0;
-fix32 TOMAAA_MinStrength = 5.0, CurveBlend = 50.0, HairThreshold = 1.0;
+fix32 TOMAAA_MinStrength = 5.0, CurveBlend = 50.0;
 int32 TOMAAA_MaxTimer = 200, TOMAAA_MicroMoveInterval = 20;
 int32 TOMAAA_Timer = 0, TOMAAA_MicroMoveTimer = 0;
 fix32 MicroX, MicroY, RS_X, RS_Y, raw_RS_X, raw_RS_Y, final_RX, final_RY;
 fix32 absX, absY, curvedX, curvedY;
-fix32 temp_x, linear_x, temp_y, linear_y;
 int32 signX, signY, rotationIndex = 0, rotationSpeed = 1;
 int32 sineTable[16];
 const int32 RAPID_FIRE_RATE = 30;
 uint8 BUTTON_FIRE, BUTTON_AIM, BUTTON_SLIDE, BUTTON_JUMP, BUTTON_TACTICAL, BUTTON_LETHAL, BUTTON_MELEE, BUTTON_RELOAD;
 bool slide_cancel_active = FALSE, reload_cancel_active = FALSE, drop_shot_active = FALSE;
 fix32 stick_lx, stick_ly;
-const bool HairTriggers = TRUE;
 int16 scaled_value;
+//int16 loop_count;
 static uint32 LEDNextTime = 0, MessageNextTime = 0;
+//static uint32 LoopTime = 0;
 fix32 RECOIL_V = 23.0;
 fix32 RECOIL_H = 0.0;
 fix32 ADJUSTMENT_STEP = 1.0;
@@ -460,6 +460,8 @@ init {
     printf("RECOIL_H: %.04f", RECOIL_H);
     printf("ADJUSTMENT_STEP: %.04f", ADJUSTMENT_STEP);
     printf("TOGGLE_ADS: %d", TOGGLE_ADS);
+
+	//LoopTime = system_time();
 }
 
 // --- Main Logic ---
@@ -470,11 +472,9 @@ main {
     raw_RS_X = get_val(STICK_1_X);
     raw_RS_Y = get_val(STICK_1_Y);
 
-    // Hair Triggers
-    if (HairTriggers) {
-        if (get_val(BUTTON_FIRE) > HairThreshold) set_val(BUTTON_FIRE, 100.0);
-        if (get_val(BUTTON_AIM) > HairThreshold) set_val(BUTTON_AIM, 100.0);
-    }
+    // Enable Hair Triggers
+	if (get_val(BUTTON_FIRE) > 1.0) set_val(BUTTON_FIRE, 100.0);
+	if (get_val(BUTTON_AIM) > 1.0) set_val(BUTTON_AIM, 100.0);
 
     // Update Hold Breath Timer
     hold_breath_timer = is_active(BUTTON_AIM) ? hold_breath_timer + 10 : 0;
@@ -483,9 +483,6 @@ main {
     if (enable_aim_assist) {
 
 		// The Magic shake
-        raw_RS_X = get_val(STICK_1_X);
-        raw_RS_Y = get_val(STICK_1_Y);
-
         absX = raw_RS_X < 0.0 ? -raw_RS_X : raw_RS_X;
         signX = raw_RS_X < 0.0 ? -1 : 1;
         absY = raw_RS_Y < 0.0 ? -raw_RS_Y : raw_RS_Y;
@@ -521,6 +518,7 @@ main {
             final_RX = clamp(RS_X + offsetX, -100.0, 100.0);
             final_RY = clamp(RS_Y + offsetY, -100.0, 100.0);
 
+			// set the new right stick values
             set_val(STICK_1_X, final_RX);
             set_val(STICK_1_Y, final_RY);
 
@@ -534,6 +532,7 @@ main {
 			
         // Not aiming and ADS toggle enabled
 		} else {
+			// fade out the effect
             if (TOMAAA_Timer > 0) {
                 TOMAAA_Timer -= 10;
                 if (TOMAAA_Timer < 0) TOMAAA_Timer = 0;
@@ -544,6 +543,8 @@ main {
                 TOMAAA_MicroMoveTimer = 0;
                 rotationIndex = 0;
             }
+			// set the new right stick values
+			// only required to maintain the same reaction curve
             set_val(STICK_1_X, RS_X);
             set_val(STICK_1_Y, RS_Y);
         }
@@ -593,8 +594,6 @@ main {
         TOMAAA_CurrentStrength = TOMAAA_MinStrength;
         TOMAAA_MicroMoveTimer = 0;
         rotationIndex = 0;
-        set_val(STICK_1_X, get_val(STICK_1_X));
-        set_val(STICK_1_Y, get_val(STICK_1_Y));
 
 		// Turn AIM Assist boost LEDs Off
 		if ( LEDUpdate == TRUE ) {
@@ -685,25 +684,37 @@ main {
         combo_stop(DropShot);
     }
 
-    // Instant Response Curve
-    fix32 scaled_lx = stick_lx;
-    fix32 scaled_ly = stick_ly;
-    if (abs(stick_lx) >= 5.0) {
-        temp_x = stick_lx * CurveBlend;
-        linear_x = stick_lx * (100.0 - CurveBlend) * 2.2;
-        scaled_lx = (temp_x + linear_x) / 100.0;
-        scaled_lx = clamp(scaled_lx, -100.0, 100.0);
+    // DEADZONE REMOVER -- can also remove stationary polar aim shake, if set high enough
+    if(abs(raw_RS_X) < STICK_NOISE) { set_val(STICK_1_X, 0.0); }
+    if(abs(raw_RS_Y) < STICK_NOISE) { set_val(STICK_1_Y, 0.0); }
+    if(abs(stick_lx) < STICK_NOISE) { set_val(STICK_2_X, 0.0); }
+    if(abs(stick_ly) < STICK_NOISE) { set_val(STICK_2_Y, 0.0); }
+
+    // ANTI-RECOIL
+    if(get_val(BUTTON_FIRE) && (!TOGGLE_ADS || get_val(BUTTON_AIM)))
+    {
+		RY = get_actual(STICK_1_Y);
+		RX = get_actual(STICK_1_X);
+
+		// vertical
+		if (get_val(BUTTON_FIRE) && (sqrt(RX*RX + RY*RY)) <= abs((fix32)RECOIL_V))
+		{
+			if(abs(RY) <= abs((fix32)RECOIL_V))
+			{
+				set_val((uint8)STICK_1_Y,((fix32)RECOIL_V * (100.0 - abs(get_val((uint8)STICK_1_Y)))) / 100.0 + get_val((uint8)STICK_1_Y));
+			}
+		}
+		// horizontal
+		if (get_val(BUTTON_FIRE) && (sqrt(RX*RX + RY*RY)) <= abs((fix32)RECOIL_H))
+		{
+			if(abs(RY) <= abs((fix32)RECOIL_H))
+			{
+				set_val((uint8)STICK_1_X,((fix32)RECOIL_H * (100.0 - abs(get_val((uint8)STICK_1_X)))) / 100.0 + get_val((uint8)STICK_1_X));
+			}
+		}
     }
-    if (abs(stick_ly) >= 5.0) {
-        temp_y = stick_ly * CurveBlend;
-        linear_y = stick_ly * (100.0 - CurveBlend) * 1.8;
-        scaled_ly = (temp_y + linear_y) / 100.0;
-        scaled_ly = clamp(scaled_ly, -100.0, 100.0);
-    }
-    set_val(STICK_2_X, scaled_lx);
-    set_val(STICK_2_Y, scaled_ly);
-	
-	// adjust anti-recoil and aim assist boost realtime with controller
+
+	// adjust settings realtime with controller
     if (is_active(BUTTON_FIRE) && is_active(BUTTON_AIM)) { // Hold Both Triggers
 		// enable/disable aim assist
 		if ( event_active(BUTTON_LETHAL) ) { // ...and Press Left Bumper
@@ -780,35 +791,13 @@ main {
     if (PMUpdate) {
     	PMSave();         // This function should be called on every iteration if changes are detected.
     }
- 
-    // DEADZONE REMOVER
-    if(abs(get_actual(STICK_1_X)) < STICK_NOISE) { set_val(STICK_1_X, 0.0); }
-    if(abs(get_actual(STICK_1_Y)) < STICK_NOISE) { set_val(STICK_1_Y, 0.0); }
-    if(abs(get_actual(STICK_2_X)) < STICK_NOISE) { set_val(STICK_2_X, 0.0); }
-    if(abs(get_actual(STICK_2_Y)) < STICK_NOISE) { set_val(STICK_2_Y, 0.0); }
- 
-    // ANTI-RECOIL
-    if(get_val(BUTTON_FIRE) && (!TOGGLE_ADS || get_val(BUTTON_AIM)))
-    {
-		RY = get_actual(STICK_1_Y);
-		RX = get_actual(STICK_1_X);
 
-		// vertical
-		if (get_val(BUTTON_FIRE) && (sqrt(RX*RX + RY*RY)) <= abs((fix32)RECOIL_V))
-		{
-			if(abs(RY) <= abs((fix32)RECOIL_V))
-			{
-				set_val((uint8)STICK_1_Y,((fix32)RECOIL_V * (100.0 - abs(get_val((uint8)STICK_1_Y)))) / 100.0 + get_val((uint8)STICK_1_Y));
-			}
-		}
-		// horizontal
-		if (get_val(BUTTON_FIRE) && (sqrt(RX*RX + RY*RY)) <= abs((fix32)RECOIL_H))
-		{
-			if(abs(RY) <= abs((fix32)RECOIL_H))
-			{
-				set_val((uint8)STICK_1_X,((fix32)RECOIL_H * (100.0 - abs(get_val((uint8)STICK_1_X)))) / 100.0 + get_val((uint8)STICK_1_X));
-			}
-		}
-    }
-	//printf("Loop Time: %f", elapsed_time());
+	//loop_count += 1;
+	//if (loop_count == 5000)
+	//{
+	//	printf("5000 Loops: %f", system_time() - LoopTime);
+	//	LoopTime = 0;
+	//	loop_count = 0;
+	//	LoopTime = system_time();
+	//}
 }
