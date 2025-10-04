@@ -478,8 +478,7 @@ main {
 
     // Update Hold Breath Timer
     hold_breath_timer = is_active(BUTTON_AIM) ? hold_breath_timer + 10 : 0;
-	if ( is_active(BUTTON_AIM) && hold_breath_timer > 0 )
-	{
+	if ( enable_hold_breath && (is_active(BUTTON_AIM) || hold_breath_timer > 0 )) {
 		set_val(BUTTON_9, 100.0);
 	}
 
