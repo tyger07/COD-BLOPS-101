@@ -1,4 +1,4 @@
-<b>Call of Duty: Black Ops 6 Gamepack</b><br/><br/>
+<b>Call of Duty: Black Ops Gamepack</b><br/><br/>
 First of all, thanks to RedbeardCrunch, J2Kbr, Layman, Scachi, Antithesis, ETB, and Dione. This is a mashup of published code from those sources.
 
 Optimized script with Auto Sprint, Slide Cancel, Turbo Melee, Bunny Hop, Rapid Fire, Polar Aim Assist Boost, Trigger Jitter, Auto Hold Breath, Auto Reload Cancel, Drop Shot, and Recoil control for the <a href="https://www.consoletuner.com/products/titan-two/">Titan Two</a>.
@@ -12,7 +12,7 @@ Aim Assist: Standard/Black Ops<br/>
 Aim Response Curve: Dynamic/Standard<br/>
 
 <b>LED Indicator:</b><br/>
-Green, Blue, Yellow, Red: Aim assist boost strength. Default aim assist boost values are at lowest end of blue range which is where sticky aim starts.
+Green, Blue, Yellow, Red: Aim assist boost strength. Default aim assist boost values are at upper end of blue range which is where aim shoupd feel pretty sticky.
 Pink blinking: ADS toggled off (recoil control and aim assist boost for hip fire too).
 
 <b>Controls:</b><br/>
