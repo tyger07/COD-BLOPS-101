@@ -23,7 +23,7 @@ Optimized script with Auto Sprint, Slide Cancel, Turbo Melee, Bunny Hop, Rapid F
 <u>Aim Response Curve:</u> Dynamic/Standard
 
 <b>LED Indicator:</b>
-<u>Green, Blue, Yellow, Red:</u> Aim assist boost strength. Default aim assist boost values are at lowest end of blue range which is where sticky aim starts.
+<u>Green, Blue, Yellow, Red:</u> Aim assist boost strength. Default aim assist boost values are at highest end of blue range which should be quite sticky.
 <u>Pink blinking:</u> ADS toggled off (recoil control and aim assist boost for hip fire too).
 
 <b>Controls:</b>
@@ -166,7 +166,7 @@ group = true
 control = spinboxf
 byteoffset = 10
 bitsize = 16
-default = 450
+default = 550
 minimum = 0
 maximum = 1000
 step = 100
@@ -178,7 +178,7 @@ group = true
 control = spinboxf
 byteoffset = 12
 bitsize = 16
-default = 600
+default = 700
 minimum = 0
 maximum = 1500
 step = 100
@@ -478,6 +478,10 @@ main {
 
     // Update Hold Breath Timer
     hold_breath_timer = is_active(BUTTON_AIM) ? hold_breath_timer + 10 : 0;
+	if ( is_active(BUTTON_AIM) && hold_breath_timer > 0 )
+	{
+		set_val(BUTTON_9, 100.0);
+	}
 
     // Polar Aim Assist boost
     if (enable_aim_assist) {
@@ -685,10 +689,10 @@ main {
     }
 
     // DEADZONE REMOVER -- can also remove stationary polar aim shake, if set high enough
-    if(abs(raw_RS_X) < STICK_NOISE) { set_val(STICK_1_X, 0.0); }
-    if(abs(raw_RS_Y) < STICK_NOISE) { set_val(STICK_1_Y, 0.0); }
-    if(abs(stick_lx) < STICK_NOISE) { set_val(STICK_2_X, 0.0); }
-    if(abs(stick_ly) < STICK_NOISE) { set_val(STICK_2_Y, 0.0); }
+    if(abs(get_actual(STICK_1_X)) < STICK_NOISE) { set_val(STICK_1_X, 0.0); }
+    if(abs(get_actual(STICK_1_Y)) < STICK_NOISE) { set_val(STICK_1_Y, 0.0); }
+    if(abs(get_actual(STICK_2_X)) < STICK_NOISE) { set_val(STICK_2_X, 0.0); }
+    if(abs(get_actual(STICK_2_Y)) < STICK_NOISE) { set_val(STICK_2_Y, 0.0); }
 
     // ANTI-RECOIL
     if(get_val(BUTTON_FIRE) && (!TOGGLE_ADS || get_val(BUTTON_AIM)))
