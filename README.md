@@ -40,7 +40,7 @@ Stickiness starts around 4.5.<br/>
 Adjust to your preference.<br/>
 
 <b>Toggle ADS:</b><br/>
-Enabled: Aim Assist boost and Anti-Recoil control only while holding aim down sight button. Use for long-distanced game modes where accuracy is needed and for game modes without lots of vehicles or parachuting.<br/>
+Enabled: Aim Assist boost and Anti-Recoil control only while holding aim down sight button. Use for long-distanced game modes where accuracy is needed and for game modes with lots of vehicles or parachuting.<br/>
 Disabled: Aim Assist boost and Anti-Recoil control affect hip fire too. Use for short-distanced game modes where quick kills are required, vehicle and parachuting shake will not distract you, and where accuracy of jumping through windows is not a factor.<br/>
 
 Note: Disabled will negatively affect camera while driving, and will be shakey while running.<br/>
