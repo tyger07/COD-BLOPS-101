@@ -1,10 +1,10 @@
 <b>Call of Duty: Black Ops Gamepack</b><br/><br/>
 First of all, thanks to RedbeardCrunch, J2Kbr, Layman, Scachi, Antithesis, ETB, and Dione. This is a mashup of published code from those sources.
 
-Optimized script with Auto Sprint, Slide Cancel, Turbo Melee, Bunny Hop, Rapid Fire, Polar Aim Assist Boost, Trigger Jitter, Auto Hold Breath, Auto Reload Cancel, Drop Shot, and Recoil control for the <a href="https://www.consoletuner.com/products/titan-two/">Titan Two</a>.
+Optimized script with Auto Sprint, Slide Cancel, Turbo Melee, Bunny Hop, Rapid Fire, Polar Aim Assist Boost, Trigger Jitter, Auto Hold Breath, Auto Reload Cancel, Drop Shot, and Recoil Control for the <a href="https://www.consoletuner.com/products/titan-two/">Titan Two</a>.
 
 <b>Recommended Game Settings:</b><br/>
-Button Layout: Tactical, Tactical Flipped, Default, or Default Flipped (select below)<br/>
+Button Layout: Tactical, Tactical Flipped, Default, or Default Flipped<br/>
 Crouch: Toggle<br/>
 Sprint Assist: Off<br/>
 Movement: Hybrid<br/>
