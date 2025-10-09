@@ -1,4 +1,4 @@
-#pragma METAINFO("COD BLOPS 101", 1, 8, "various")
+#pragma METAINFO("COD BLOPS 101", 1, 9, "various")
 /* Optimized GPC2 Script for Call of Duty: Black Ops
  * Features: Auto Sprint, Slide Cancel, Turbo Melee, Bunny Hop, Rapid Fire, Polar Aim Assist, Trigger Jitter, Auto Hold Breath, Auto Reload Cancel, Drop Shot
  * Settings: Tactical/Default/Tactical Flipped/Default Flipped layouts, configurable via Gtuner IV
@@ -264,29 +264,23 @@ decimals        = 1
 */
 
 // --- Configurable Variables ---
-bool enable_rapid_fire, enable_aim_assist, enable_trigger_jitter, enable_hold_breath;
-bool enable_auto_sprint, enable_slide_cancel, enable_turbo_melee, enable_bunny_hop;
-bool enable_auto_reload_cancel, enable_drop_shot;
-uint8 button_layout;
+bool enable_rapid_fire = FALSE, enable_aim_assist = TRUE, enable_trigger_jitter = FALSE, enable_hold_breath = FALSE;
+bool enable_auto_sprint = FALSE, enable_slide_cancel = FALSE, enable_turbo_melee = FALSE, enable_bunny_hop = FALSE;
+bool enable_auto_reload_cancel = FALSE, enable_drop_shot = FALSE;
+uint8 button_layout = 0;
 fix32 TOMAAA_MaxStrength, TOMAAA_AimFireStrength, TOMAAA_CurrentStrength = 5.0;
-fix32 TOMAAA_MinStrength = 5.0, CurveBlend = 50.0;
-int32 TOMAAA_MaxTimer = 200, TOMAAA_MicroMoveInterval = 20;
 int32 TOMAAA_Timer = 0, TOMAAA_MicroMoveTimer = 0;
 fix32 MicroX, MicroY, RS_X, RS_Y, raw_RS_X, raw_RS_Y, final_RX, final_RY;
 fix32 absX, absY, curvedX, curvedY;
-int32 signX, signY, rotationIndex = 0, rotationSpeed = 1;
+int32 signX, signY, rotationIndex = 0;
 int32 sineTable[16];
-const int32 RAPID_FIRE_RATE = 30;
 uint8 BUTTON_FIRE, BUTTON_AIM, BUTTON_SLIDE, BUTTON_JUMP, BUTTON_TACTICAL, BUTTON_LETHAL, BUTTON_MELEE, BUTTON_RELOAD;
 bool slide_cancel_active = FALSE, reload_cancel_active = FALSE, drop_shot_active = FALSE;
 fix32 stick_lx, stick_ly;
 int16 scaled_value;
-//int16 loop_count;
 static uint32 LEDNextTime = 0, MessageNextTime = 0;
-//static uint32 LoopTime = 0;
 fix32 RECOIL_V = 23.0;
 fix32 RECOIL_H = 0.0;
-fix32 ADJUSTMENT_STEP = 1.0;
 fix32 RY;
 fix32 RX;
 bool TOGGLE_ADS = TRUE;
@@ -310,7 +304,6 @@ void PMSave() {
 		printf("STICK_NOISE: %.04f", STICK_NOISE);
 		printf("RECOIL_V: %.04f", RECOIL_V);
 		printf("RECOIL_H: %.04f", RECOIL_H);
-		printf("ADJUSTMENT_STEP: %.04f", ADJUSTMENT_STEP);
 		printf("TOGGLE_ADS: %d", TOGGLE_ADS);
         PMUpdate = FALSE;
         printf("ic update");
@@ -361,9 +354,9 @@ combo BunnyHop {
 
 combo RapidFire {
     set_val(BUTTON_FIRE, 100.0);
-    wait(RAPID_FIRE_RATE);
+    wait(30);
     set_val(BUTTON_FIRE, 0.0);
-    wait(RAPID_FIRE_RATE);
+    wait(30);
 }
 
 combo TriggerJitterBoost {
@@ -439,7 +432,6 @@ init {
     STICK_NOISE = clamp(STICK_NOISE,0.0,255.0);
     RECOIL_V = clamp(RECOIL_V,-100.0,100.0);
     RECOIL_H = clamp(RECOIL_H,-100.0,100.0);
-    ADJUSTMENT_STEP = clamp(ADJUSTMENT_STEP,1.0,10.0);
 
 	// message out current settings
     port_permit_ffb(PORT_USB_A);
@@ -457,10 +449,7 @@ init {
 	printf("STICK_NOISE: %.04f", STICK_NOISE);
     printf("RECOIL_V: %.04f", RECOIL_V);
     printf("RECOIL_H: %.04f", RECOIL_H);
-    printf("ADJUSTMENT_STEP: %.04f", ADJUSTMENT_STEP);
     printf("TOGGLE_ADS: %d", TOGGLE_ADS);
-
-	//LoopTime = system_time();
 }
 
 // --- Main Logic ---
@@ -484,20 +473,20 @@ main {
         absY = raw_RS_Y < 0.0 ? -raw_RS_Y : raw_RS_Y;
         signY = raw_RS_Y < 0.0 ? -1 : 1;
         curvedX = (absX * absX) / 128.0;
-        RS_X = ((curvedX * CurveBlend) + (absX * (100.0 - CurveBlend))) / 100.0 * (fix32)signX;
+        RS_X = ((curvedX * 50.0) + (absX * (100.0 - 50.0))) / 100.0 * (fix32)signX;
         curvedY = (absY * absY) / 128.0;
-        RS_Y = ((curvedY * CurveBlend) + (absY * (100.0 - CurveBlend))) / 100.0 * (fix32)signY;
+        RS_Y = ((curvedY * 50.0) + (absY * (100.0 - 50.0))) / 100.0 * (fix32)signY;
 
 		// If aiming or ADS toggle disabled
         if (is_active(BUTTON_AIM) || !TOGGLE_ADS) {
-            if (TOMAAA_Timer < TOMAAA_MaxTimer) TOMAAA_Timer += 10;
-            TOMAAA_CurrentStrength = (is_active(BUTTON_AIM) && get_val(BUTTON_FIRE) > 30.0) ? TOMAAA_AimFireStrength : TOMAAA_MinStrength + ((TOMAAA_MaxStrength - TOMAAA_MinStrength) * (fix32)TOMAAA_Timer) / (fix32)TOMAAA_MaxTimer;
-            TOMAAA_CurrentStrength = clamp(TOMAAA_CurrentStrength, TOMAAA_MinStrength, TOMAAA_MaxStrength);
+            if (TOMAAA_Timer < 200) TOMAAA_Timer += 10;
+            TOMAAA_CurrentStrength = (is_active(BUTTON_AIM) && get_val(BUTTON_FIRE) > 30.0) ? TOMAAA_AimFireStrength : 5.0 + ((TOMAAA_MaxStrength - 5.0) * (fix32)TOMAAA_Timer) / 200.0;
+            TOMAAA_CurrentStrength = clamp(TOMAAA_CurrentStrength, 5.0, TOMAAA_MaxStrength);
 
             if (TOMAAA_MicroMoveTimer <= 0) {
                 MicroX = ((fix32)rand() * 5.0) - 2.5;
                 MicroY = ((fix32)rand() * 5.0) - 2.5;
-                TOMAAA_MicroMoveTimer = TOMAAA_MicroMoveInterval;
+                TOMAAA_MicroMoveTimer = 20;
             } else {
                 TOMAAA_MicroMoveTimer -= 10;
             }
@@ -506,7 +495,7 @@ main {
 			fix32 offsetX = ((fix32)sineTable[((angle / 23 + 4) & 15)] / 127.0) * TOMAAA_CurrentStrength;
 			fix32 offsetY = ((fix32)sineTable[(angle / 23) & 15] / 127.0) * TOMAAA_CurrentStrength;
 
-            if (TOMAAA_MicroMoveTimer > (TOMAAA_MicroMoveInterval / 2)) {
+            if (TOMAAA_MicroMoveTimer > (20 / 2)) {
                 offsetX += MicroX;
                 offsetY += MicroY;
             }
@@ -518,7 +507,7 @@ main {
             set_val(STICK_1_X, final_RX);
             set_val(STICK_1_Y, final_RY);
 
-            rotationIndex = (rotationIndex + rotationSpeed) % 16;
+            rotationIndex = (rotationIndex + 1) % 16;
 
 			// Throttle the message output to every half second
 			if ( MessageNextTime < system_time() ) {
@@ -532,10 +521,10 @@ main {
             if (TOMAAA_Timer > 0) {
                 TOMAAA_Timer -= 10;
                 if (TOMAAA_Timer < 0) TOMAAA_Timer = 0;
-                TOMAAA_CurrentStrength = TOMAAA_MinStrength + ((TOMAAA_MaxStrength - TOMAAA_MinStrength) * (fix32)TOMAAA_Timer) / (fix32)TOMAAA_MaxTimer;
-                TOMAAA_CurrentStrength = clamp(TOMAAA_CurrentStrength, TOMAAA_MinStrength, TOMAAA_MaxStrength);
+                TOMAAA_CurrentStrength = 5.0 + ((TOMAAA_MaxStrength - 5.0) * (fix32)TOMAAA_Timer) / 200.0;
+                TOMAAA_CurrentStrength = clamp(TOMAAA_CurrentStrength, 5.0, TOMAAA_MaxStrength);
             } else {
-                TOMAAA_CurrentStrength = TOMAAA_MinStrength;
+                TOMAAA_CurrentStrength = 5.0;
                 TOMAAA_MicroMoveTimer = 0;
                 rotationIndex = 0;
             }
@@ -587,7 +576,7 @@ main {
     } else {
 
         TOMAAA_Timer = 0;
-        TOMAAA_CurrentStrength = TOMAAA_MinStrength;
+        TOMAAA_CurrentStrength = 5.0;
         TOMAAA_MicroMoveTimer = 0;
         rotationIndex = 0;
 
@@ -754,14 +743,14 @@ main {
 		} else {
 			if ( event_active(BUTTON_10) ) { // ...and Press DPAD_UP
 				if ( RECOIL_V > -100.0) {
-					RECOIL_V = (RECOIL_V - ADJUSTMENT_STEP);
+					RECOIL_V = (RECOIL_V - 1.0);
 					pmem_write(19,(fix32) RECOIL_V); // update the pmem value
 					PMUpdate=TRUE; // pmem and gui value throttle
 				}
 			}
 			if ( event_active(BUTTON_11) ) { // ...and Press DPAD_DOWN
 				if ( RECOIL_V < 100.0) {
-					RECOIL_V = (RECOIL_V + ADJUSTMENT_STEP);
+					RECOIL_V = (RECOIL_V + 1.0);
 					pmem_write(19,(fix32) RECOIL_V); // update the pmem value
 					PMUpdate=TRUE; // pmem and gui value throttle
 				}
@@ -769,14 +758,14 @@ main {
 		}
         if ( event_active(BUTTON_12) ) { // ...Press DPAD_LEFT
             if ( RECOIL_H > -100.0) {
-				RECOIL_H = (RECOIL_H - ADJUSTMENT_STEP);
+				RECOIL_H = (RECOIL_H - 1.0);
                 pmem_write(23,(fix32) RECOIL_H); // update the pmem value
                 PMUpdate=TRUE; // pmem and gui value throttle
             }
         }
         if ( event_active(BUTTON_13) ) { // ...and Press DPAD_RIGHT
             if ( RECOIL_H < 100.0) {
-				RECOIL_H = (RECOIL_H + ADJUSTMENT_STEP);
+				RECOIL_H = (RECOIL_H + 1.0);
                 pmem_write(23,(fix32) RECOIL_H); // update the pmem value
                 PMUpdate=TRUE; // pmem and gui value throttle
             }
@@ -792,13 +781,4 @@ main {
     if (PMUpdate) {
     	PMSave();         // This function should be called on every iteration if changes are detected.
     }
-
-	//loop_count += 1;
-	//if (loop_count == 5000)
-	//{
-	//	printf("5000 Loops: %f", system_time() - LoopTime);
-	//	LoopTime = 0;
-	//	loop_count = 0;
-	//	LoopTime = system_time();
-	//}
 }
