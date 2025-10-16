@@ -1,6 +1,6 @@
-#pragma METAINFO("COD BLOPS 101", 1, 10, "various")
+#pragma METAINFO("COD BLOPS 101", 1, 11, "various")
 /* Optimized GPC2 Script for Call of Duty: Black Ops
- * Features: Auto Sprint, Slide Cancel, Turbo Melee, Bunny Hop, Rapid Fire, Polar Aim Assist, Trigger Jitter, Auto Hold Breath, Auto Reload Cancel, Drop Shot
+ * Features: Auto Sprint, Slide Cancel, Turbo Melee, Bunny Hop, Rapid Fire, Polar Aim Assist, Trigger Jitter, Auto Hold Breath, Auto Reload Cancel, Drop Shot, and Recoil Control
  * Settings: Tactical/Default/Tactical Flipped/Default Flipped layouts, configurable via Gtuner IV
 
 <cfgdesc>
@@ -263,19 +263,16 @@ decimals        = 1
 </cfgdesc>
 */
 
-// --- Configurable Variables ---
-bool enable_rapid_fire = FALSE, enable_aim_assist = TRUE, enable_trigger_jitter = FALSE, enable_hold_breath = FALSE;
-bool enable_auto_sprint = FALSE, enable_slide_cancel = FALSE, enable_turbo_melee = FALSE, enable_bunny_hop = FALSE;
-bool enable_auto_reload_cancel = FALSE, enable_drop_shot = FALSE;
+// --- Variables ---
+// any values set are just defaults which are later changed per preference
+bool enable_rapid_fire = FALSE, enable_aim_assist = TRUE, enable_trigger_jitter = FALSE, enable_hold_breath = FALSE, enable_auto_sprint = FALSE;
+bool enable_slide_cancel = FALSE, enable_turbo_melee = FALSE, enable_bunny_hop = FALSE, enable_auto_reload_cancel = FALSE, enable_drop_shot = FALSE;
 bool slide_cancel_active = FALSE, reload_cancel_active = FALSE, drop_shot_active = FALSE, TOGGLE_ADS = TRUE;
 bool RedLED = FALSE, GreenLED = FALSE, BlueLED = FALSE, PinkLED = FALSE, LEDUpdate = TRUE, PMUpdate = FALSE;
 uint8 button_layout = 0, BUTTON_FIRE, BUTTON_AIM, BUTTON_SLIDE, BUTTON_JUMP, BUTTON_TACTICAL, BUTTON_LETHAL, BUTTON_MELEE, BUTTON_RELOAD;
 fix32 TOMAAA_MaxStrength, TOMAAA_AimFireStrength, TOMAAA_CurrentStrength = 5.0, MicroX, MicroY;
-fix32 stick_ly, RX, RY, RS_X, RS_Y, raw_RS_X, raw_RS_Y, final_RX, final_RY, absX, absY, curvedX, curvedY;
-fix32 RECOIL_V = 23.0, RECOIL_H = 0.0, STICK_NOISE = 0.00;
-int16 scaled_value;
-int32 TOMAAA_Timer = 0, TOMAAA_MicroMoveTimer = 0;
-int32 signX, signY, rotationIndex = 0, sineTable[16];
+fix32 stick_ly, RX, RY, RS_X, RS_Y, raw_RS_X, raw_RS_Y, final_RX, final_RY, absX, absY, RECOIL_V = 23.0, RECOIL_H = 0.0, STICK_NOISE = 0.00;
+int32 TOMAAA_Timer = 0, TOMAAA_MicroMoveTimer = 0, signX, signY, rotationIndex = 0, sineTable[16];
 static uint32 LEDNextTime = 0, MessageNextTime = 0;
 
 // --- PMEM Read Function ---
@@ -292,7 +289,6 @@ void PMSave() {
     if (PMUpdate && PMSLast < system_time())
     {
 		printf("enable_aim_assist: %d", enable_aim_assist);
-		printf("STICK_NOISE: %.04f", STICK_NOISE);
 		printf("RECOIL_V: %.04f", RECOIL_V);
 		printf("RECOIL_H: %.04f", RECOIL_H);
 		printf("TOGGLE_ADS: %d", TOGGLE_ADS);
@@ -436,7 +432,7 @@ init {
     printf("enable_bunny_hop: %d", enable_bunny_hop);
     printf("enable_reload_cancel: %d", enable_auto_reload_cancel);
     printf("enable_drop_shot: %d", enable_drop_shot);
-    printf("button_layout: %d", button_layout);
+    printf("button_layout: %d (0=Tactical, 1=Default, 2=Tactical Flipped, 3=Default Flipped)", button_layout);
 	printf("STICK_NOISE: %.04f", STICK_NOISE);
     printf("RECOIL_V: %.04f", RECOIL_V);
     printf("RECOIL_H: %.04f", RECOIL_H);
@@ -462,10 +458,8 @@ main {
         signX = raw_RS_X < 0.0 ? -1 : 1;
         absY = raw_RS_Y < 0.0 ? -raw_RS_Y : raw_RS_Y;
         signY = raw_RS_Y < 0.0 ? -1 : 1;
-        curvedX = (absX * absX) / 128.0;
-        RS_X = ((curvedX * 50.0) + (absX * (100.0 - 50.0))) / 100.0 * (fix32)signX;
-        curvedY = (absY * absY) / 128.0;
-        RS_Y = ((curvedY * 50.0) + (absY * (100.0 - 50.0))) / 100.0 * (fix32)signY;
+        RS_X = ((((absX * absX) / 128.0) * 50.0) + (absX * 50.0)) / 100.0 * (fix32)signX;
+        RS_Y = ((((absY * absY) / 128.0) * 50.0) + (absY * 50.0)) / 100.0 * (fix32)signY;
 
 		// If aiming or ADS toggle disabled
         if (is_active(BUTTON_AIM) || !TOGGLE_ADS) {
@@ -485,7 +479,7 @@ main {
 			fix32 offsetX = ((fix32)sineTable[((angle / 23 + 4) & 15)] / 127.0) * TOMAAA_CurrentStrength;
 			fix32 offsetY = ((fix32)sineTable[(angle / 23) & 15] / 127.0) * TOMAAA_CurrentStrength;
 
-            if (TOMAAA_MicroMoveTimer > (20 / 2)) {
+            if (TOMAAA_MicroMoveTimer > 10) {
                 offsetX += MicroX;
                 offsetY += MicroY;
             }
@@ -525,7 +519,7 @@ main {
         }
 		
 		// AIM Assist Boost LEDs On based on Aim Assist strength
-		if ( LEDUpdate == TRUE ) {
+		if (LEDUpdate) {
 			// Blue
 			if (((int16) TOMAAA_AimFireStrength >= 11 && (int16) TOMAAA_AimFireStrength <= 14) && BlueLED == FALSE) {
 				led_set(LED_1, 1.0, 0); led_set(LED_2, 0.0, 0); led_set(LED_3, 0.0, 0);
@@ -555,7 +549,7 @@ main {
         rotationIndex = 0;
 
 		// Turn AIM Assist boost LEDs Off
-		if ( LEDUpdate == TRUE ) {
+		if (LEDUpdate) {
 			led_set(LED_1, 0.0, 0); led_set(LED_2, 0.0, 0); led_set(LED_3, 0.0, 0);
 			BlueLED = FALSE; RedLED = FALSE; GreenLED = FALSE;
 			LEDUpdate = FALSE;
@@ -563,8 +557,8 @@ main {
     }
 
 	// Pink LED off when ADS Toggle enabled
-	if ( TOGGLE_ADS ) {
-		if ( PinkLED == TRUE ) {
+	if (TOGGLE_ADS) {
+		if (PinkLED) {
 			led_set(LED_4, 0.0, 0);
 			PinkLED = FALSE;
 			LEDNextTime = system_time();
@@ -574,12 +568,12 @@ main {
 		if (LEDNextTime < system_time())
 		{
 			//flip flop the Pink LED state every second
-			if ( PinkLED == FALSE ) {
-				led_set(LED_4, 0.5, 0);
-				PinkLED = TRUE;
-			} else {
+			if (PinkLED) {
 				led_set(LED_4, 0.0, 0);
 				PinkLED = FALSE;
+			} else {
+				led_set(LED_4, 0.5, 0);
+				PinkLED = TRUE;
 			}
 			LEDNextTime = system_time() + 1000;
 		}
@@ -643,10 +637,10 @@ main {
 	if (enable_hold_breath && is_active(BUTTON_AIM)) set_val(BUTTON_9, 100.0);
 
     // DEADZONE REMOVER -- can also remove stationary polar aim shake, if set high enough
-    if(abs(get_actual(STICK_1_X)) < STICK_NOISE) { set_val(STICK_1_X, 0.0); }
-    if(abs(get_actual(STICK_1_Y)) < STICK_NOISE) { set_val(STICK_1_Y, 0.0); }
-    if(abs(get_actual(STICK_2_X)) < STICK_NOISE) { set_val(STICK_2_X, 0.0); }
-    if(abs(get_actual(STICK_2_Y)) < STICK_NOISE) { set_val(STICK_2_Y, 0.0); }
+    if (abs(get_actual(STICK_1_X)) < STICK_NOISE) set_val(STICK_1_X, 0.0);
+    if (abs(get_actual(STICK_1_Y)) < STICK_NOISE) set_val(STICK_1_Y, 0.0);
+    if (abs(get_actual(STICK_2_X)) < STICK_NOISE) set_val(STICK_2_X, 0.0);
+    if (abs(get_actual(STICK_2_Y)) < STICK_NOISE) set_val(STICK_2_Y, 0.0);
 
     // ANTI-RECOIL
     if(get_val(BUTTON_FIRE) && (!TOGGLE_ADS || get_val(BUTTON_AIM)))
@@ -659,72 +653,74 @@ main {
 			set_val((uint8)STICK_1_Y,((fix32)RECOIL_V * (100.0 - abs(get_val((uint8)STICK_1_Y)))) / 100.0 + get_val((uint8)STICK_1_Y));
 		}
 		// horizontal
-		if ((get_val(BUTTON_FIRE) && (sqrt(RX*RX + RY*RY)) <= abs((fix32)RECOIL_H)) && (abs(RY) <= abs((fix32)RECOIL_H))) {
+		if ((get_val(BUTTON_FIRE) && (sqrt(RX*RX + RY*RY)) <= abs((fix32)RECOIL_H)) && (abs(RX) <= abs((fix32)RECOIL_H))) {
 			set_val((uint8)STICK_1_X,((fix32)RECOIL_H * (100.0 - abs(get_val((uint8)STICK_1_X)))) / 100.0 + get_val((uint8)STICK_1_X));
 		}
     }
 
-	// adjust settings realtime with controller
-    if (is_active(BUTTON_FIRE) && is_active(BUTTON_AIM)) { // Hold Both Triggers
-		// enable/disable aim assist
-		if ( event_active(BUTTON_LETHAL) ) { // ...Press Left Bumper
+	// adjust settings realtime with controller if holding both triggers and...
+    if ((is_active(BUTTON_FIRE) && is_active(BUTTON_AIM)) && (event_active(BUTTON_LETHAL) || event_active(BUTTON_TACTICAL) || event_active(BUTTON_10) || event_active(BUTTON_11) || event_active(BUTTON_12) || event_active(BUTTON_13))) {
+		// enable/disable aim assist if press left bumper
+		if (event_active(BUTTON_LETHAL)) {
 			enable_aim_assist = (!enable_aim_assist);
             pmem_write(1, enable_aim_assist); // toggle and update the pmem value
             LEDUpdate = TRUE;
-			PMUpdate=TRUE; // pmem and gui value throttle
+			PMUpdate = TRUE; // pmem and gui value throttle
         }
-		// enable/disable aim toggle
-		else if ( event_active(BUTTON_TACTICAL) ) { // ...Press Right Bumper
+		// enable/disable aim toggle if press right bumper
+		else if (event_active(BUTTON_TACTICAL)) {
 			TOGGLE_ADS = (!TOGGLE_ADS);
             pmem_write(27, TOGGLE_ADS); // toggle and update the pmem value
-            PMUpdate=TRUE; // pmem and gui value throttle
+            PMUpdate = TRUE; // pmem and gui value throttle
         }
-		// if aim assist enabled, up/down does aim assist
+		// if aim assist boost enabled, up/down adjusts aim assist strength
 		if (enable_aim_assist) {
-			if (( event_active(BUTTON_10) ) && ((int16) TOMAAA_AimFireStrength < 25 && (int16) TOMAAA_MaxStrength < 38)) { // ...Press DPAD_UP
+			// increase if press dpad up
+			if ((event_active(BUTTON_10)) && ((int16) TOMAAA_AimFireStrength < 25 && (int16) TOMAAA_MaxStrength < 38)) {
 				TOMAAA_AimFireStrength += 1.0;
-				scaled_value = ((int16) TOMAAA_AimFireStrength) * 2560 / 25;
-				pmem_write(10,(int16) scaled_value); // update the pmem value
 				TOMAAA_MaxStrength += 1.0;
-				scaled_value = ((int16) TOMAAA_MaxStrength) * 3741 / 38;
-				pmem_write(12,(int16) scaled_value); // update the pmem value
+				pmem_write(10,((int16) TOMAAA_AimFireStrength) * 2560 / 25); // update the pmem value
+				pmem_write(12,((int16) TOMAAA_MaxStrength) * 3741 / 38); // update the pmem value
 				LEDUpdate = TRUE;
-				PMUpdate=TRUE; // pmem and gui value throttle
-			} else if (( event_active(BUTTON_11) ) && ((int16) TOMAAA_AimFireStrength > 1 && (int16) TOMAAA_MaxStrength > 1)) { // ...or Press DPAD_DOWN
-				TOMAAA_AimFireStrength -= 1.0;
-				scaled_value = ((int16) TOMAAA_AimFireStrength) * 2560 / 25;
-				pmem_write(10,(int16) scaled_value); // update the pmem value
-				TOMAAA_MaxStrength -= 1.0;
-				scaled_value = ((int16) TOMAAA_MaxStrength) * 3741 / 38;
-				pmem_write(12,(int16) scaled_value); // update the pmem value
-				LEDUpdate = TRUE;
-				PMUpdate=TRUE; // pmem and gui value throttle
+				PMUpdate = TRUE; // pmem and gui value throttle
 			}
-		// else up/down does vertical recoil
+			// or decrease if press dpad down
+			else if ((event_active(BUTTON_11)) && ((int16) TOMAAA_AimFireStrength > 1 && (int16) TOMAAA_MaxStrength > 1)) {
+				TOMAAA_AimFireStrength -= 1.0;
+				TOMAAA_MaxStrength -= 1.0;
+				pmem_write(10,((int16) TOMAAA_AimFireStrength) * 2560 / 25); // update the pmem value
+				pmem_write(12,((int16) TOMAAA_MaxStrength) * 3741 / 38); // update the pmem value
+				LEDUpdate = TRUE;
+				PMUpdate = TRUE; // pmem and gui value throttle
+			}
+		// otherwise up/down adjusts vertical recoil
 		} else {
-			if (( event_active(BUTTON_10) ) && ( RECOIL_V > -100.0)) { // ...Press DPAD_UP
+			// decrease compensation if press dpad up
+			if ((event_active(BUTTON_10)) && (RECOIL_V > -100.0)) {
 				RECOIL_V -= 1.0;
 				pmem_write(19,(fix32) RECOIL_V); // update the pmem value
-				PMUpdate=TRUE; // pmem and gui value throttle
-			} else if (( event_active(BUTTON_11) ) && ( RECOIL_V < 100.0)) { // ...or Press DPAD_DOWN
+				PMUpdate = TRUE; // pmem and gui value throttle
+			}
+			// or increase compensation if press dpad down
+			else if ((event_active(BUTTON_11)) && (RECOIL_V < 100.0)) {
 				RECOIL_V += 1.0;
 				pmem_write(19,(fix32) RECOIL_V); // update the pmem value
-				PMUpdate=TRUE; // pmem and gui value throttle
+				PMUpdate = TRUE; // pmem and gui value throttle
 			}
 		}
-		// horizontal recoil
-        if (( event_active(BUTTON_12) ) && ( RECOIL_H > -100.0)) { // ...Press DPAD_LEFT
+		// adjust horizontal recoil control if pressing dpad left
+        if ((event_active(BUTTON_12)) && (RECOIL_H > -100.0)) {
 			RECOIL_H -= 1.0;
 			pmem_write(23,(fix32) RECOIL_H); // update the pmem value
-			PMUpdate=TRUE; // pmem and gui value throttle
-        } else if (( event_active(BUTTON_13) ) && ( RECOIL_H < 100.0)) { // ...or Press DPAD_RIGHT
+			PMUpdate = TRUE; // pmem and gui value throttle
+        }
+		// or if pressing dpad right
+		else if ((event_active(BUTTON_13)) && (RECOIL_H < 100.0)) {
 			RECOIL_H += 1.0;
 			pmem_write(23,(fix32) RECOIL_H); // update the pmem value
-			PMUpdate=TRUE; // pmem and gui value throttle
+			PMUpdate = TRUE; // pmem and gui value throttle
         }
     }
-    // save values when changed
-    if (PMUpdate) {
-    	PMSave();         // This function should be called on every iteration if changes are detected.
-    }
+    // schedule save of values, if changed
+    if (PMUpdate) PMSave(); // This function should be called every loop until changes are saved.
 }
