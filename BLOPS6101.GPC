@@ -1,4 +1,4 @@
-#pragma METAINFO("COD BLOPS 101", 1, 11, "various")
+#pragma METAINFO("COD BLOPS 101", 1, 12, "various")
 /* Optimized GPC2 Script for Call of Duty: Black Ops
  * Features: Auto Sprint, Slide Cancel, Turbo Melee, Bunny Hop, Rapid Fire, Polar Aim Assist, Trigger Jitter, Auto Hold Breath, Auto Reload Cancel, Drop Shot, and Recoil Control
  * Settings: Tactical/Default/Tactical Flipped/Default Flipped layouts, configurable via Gtuner IV
@@ -6,212 +6,190 @@
 <cfgdesc>
 
 [Gamepack Info]
-control = info
-color = #1E90FF
-shortdesc = <<<MULTILINE
+control         = info
+color           = #1E90FF
+shortdesc       = <<<MULTILINE
 <b>Call of Duty: Black Ops Gamepack</b>
-First of all, thanks to RedbeardCrunch, J2Kbr, Layman, Scachi, Antithesis, ETB, and Dione. This is a mashup of published code from those sources.
-
-Optimized script with Auto Sprint, Slide Cancel, Turbo Melee, Bunny Hop, Rapid Fire, Polar Aim Assist, Trigger Jitter, Auto Hold Breath, Auto Reload Cancel, Drop Shot, and Recoil control.
-
+First of all, thanks to RedbeardCrunch, J2Kbr, Layman, Scachi, Antithesis, ETB, and Dione. This is a mashup of published code from those sources.<br />
+Optimized script with Auto Sprint, Slide Cancel, Turbo Melee, Bunny Hop, Rapid Fire, Polar Aim Assist, Trigger Jitter, Auto Hold Breath, Auto Reload Cancel, Drop Shot, and Recoil control.<br />
 <b>Recommended Game Settings:</b>
 <u>Button Layout:</u> Tactical, Tactical Flipped, Default, or Default Flipped (select below)
 <u>Crouch:</u> Toggle
 <u>Sprint Assist:</u> Off
 <u>Movement:</u> Hybrid
 <u>Aim Assist:</u> Standard/Black Ops
-<u>Aim Response Curve:</u> Dynamic/Standard
-
+<u>Aim Response Curve:</u> Dynamic/Standard<br />
 <b>LED Indicator:</b>
 <u>Green, Blue, Yellow, Red:</u> Aim assist boost strength. Default aim assist boost values are at highest end of blue range which should be quite sticky.
-<u>Pink blinking:</u> ADS toggled off (recoil control and aim assist boost for hip fire too).
-
+<u>Pink blinking:</u> ADS toggled off (recoil control and aim assist boost for hip fire too).<br />
 <b>Controls:</b>
-All mods toggled via Gamepack Configurator and some via controller where noted below.
-
-<u>Toggle aim assist boost:</u> Press aim and fire button + lethal button.
+All mods toggled via Gamepack Configurator and some via controller where noted below.<br />
+<u>Toggle aim assist boost on/off:</u> Press aim and fire button + lethal button.
 <u>Adjust aim assist strength:</u> <u>When aim assist toggled enabled:</u> Press aim and fire button + dpad up or down.
 <u>Adjust recoil vertical:</u> <u>When aim assist toggled disabled:</u> Press aim and fire button + dpad up or down.
 <u>Adjust recoil horizontal:</u> Press aim and fire button + dpad left or right.
-<u>Toggle hip fire recoil control and hip fire aim assist boost:</u> Press aim and fire button + tactical button.
+<u>Toggle hip fire recoil control and hip fire aim assist boost on/off:</u> Press aim and fire button + tactical button.
 <u>Drop Shot:</u> Circle/B press when left stick is backwards.
 <u>Slide Cancel:</u> RS/R3 during sprint (left stick forward).
 <u>Auto Reload Cancel:</u> Triangle/Y press when left stick is backwards.
-<u>Bunny Hop:</u> Cross/A press when left stick is forward.
-
+<u>Bunny Hop:</u> Cross/A press when left stick is forward.<br />
 <b>Note:</b> Slide Cancel and Bunny Hop use left stick forward; Auto Reload Cancel and Drop Shot use left stick backward.
 MULTILINE
 
 [Mod Toggles]
-control = info
-color = #1E90FF
-shortdesc = Enable or disable script mods
-collapsible = 1
+control         = info
+color           = #1E90FF
+shortdesc       = Enable or disable script mods
+collapsible     = 1
 
 [Rapid Fire]
-group = true
-control = checkbox
-byteoffset = 0
-bitsize = 8
-default = 0
-item = Enable Rapid Fire (R2/RT or R1/RB spam)
+group           = true
+control         = checkbox
+byteoffset      = 0
+bitsize         = 8
+default         = 0
+item            = Enable Rapid Fire (R2/RT or R1/RB spam)
 
 [Aim Assist]
-group = true
-control = checkbox
-byteoffset = 1
-bitsize = 8
-default = 1
-item = Enable Polar Aim Assist Boost
+group           = true
+control         = checkbox
+byteoffset      = 1
+bitsize         = 8
+default         = 1
+item            = Enable Polar Aim Assist Boost
 
 [Trigger Jitter]
-group = true
-control = checkbox
-byteoffset = 2
-bitsize = 8
-default = 0
-item = Enable Trigger Jitter (L2/LT or L1/LB pulse, Full ADS when aiming+firing)
+group           = true
+control         = checkbox
+byteoffset      = 2
+bitsize         = 8
+default         = 0
+item            = Enable Trigger Jitter (L2/LT or L1/LB pulse, Full ADS when aiming+firing)
 
 [Hold Breath]
-group = true
-control = checkbox
-byteoffset = 3
-bitsize = 8
-default = 0
-item = Enable Auto Hold Breath (L3/LS during ADS)
+group           = true
+control         = checkbox
+byteoffset      = 3
+bitsize         = 8
+default         = 0
+item            = Enable Auto Hold Breath (L3/LS during ADS)
 
 [Auto Sprint]
-group = true
-control = checkbox
-byteoffset = 4
-bitsize = 8
-default = 0
-item = Enable Auto Sprint 
+group           = true
+control         = checkbox
+byteoffset      = 4
+bitsize         = 8
+default         = 0
+item            = Enable Auto Sprint 
 
 [Slide Cancel]
-group = true
-control = checkbox
-byteoffset = 5
-bitsize = 8
-default = 0
-item = Enable Slide Cancel 
+group           = true
+control         = checkbox
+byteoffset      = 5
+bitsize         = 8
+default         = 0
+item            = Enable Slide Cancel 
 
 [Turbo Melee]
-group = true
-control = checkbox
-byteoffset = 6
-bitsize = 8
-default = 0
-item = Enable Turbo Melee 
+group           = true
+control         = checkbox
+byteoffset      = 6
+bitsize         = 8
+default         = 0
+item            = Enable Turbo Melee 
 
 [Bunny Hop]
-group = true
-control = checkbox
-byteoffset = 7
-bitsize = 8
-default = 0
-item = Enable Bunny Hop 
+group           = true
+control         = checkbox
+byteoffset      = 7
+bitsize         = 8
+default         = 0
+item            = Enable Bunny Hop 
 
 [Auto Reload Cancel]
-group = true
-control = checkbox
-byteoffset = 8
-bitsize = 8
-default = 0
-item = Enable Auto Reload Cancel (Triangle/Y press when left stick is backwards)
+group           = true
+control         = checkbox
+byteoffset      = 8
+bitsize         = 8
+default         = 0
+item            = Enable Auto Reload Cancel (Triangle/Y press when left stick is backwards)
 
 [Drop Shot]
-group = true
-control = checkbox
-byteoffset = 9
-bitsize = 8
-default = 0
-item = Enable Drop Shot (Circle/B press when left stick is backwards)
+group           = true
+control         = checkbox
+byteoffset      = 9
+bitsize         = 8
+default         = 0
+item            = Enable Drop Shot (Circle/B press when left stick is backwards)
 
 [Button Layout]
-group = true
-control = combobox
-byteoffset = 14
-bitsize = 8
-default = 0
-item = Tactical
-item = Default
-item = Tactical Flipped
-item = Default Flipped
+group           = true
+control         = combobox
+byteoffset      = 14
+bitsize         = 8
+default         = 0
+item            = Tactical
+item            = Default
+item            = Tactical Flipped
+item            = Default Flipped
 shortdesc       = <<<MULTILINE
-
-<b>Button Layout:</b>
+<br /><b>Button Layout:</b>
 Select your controller button layout
 MULTILINE
 
 [Aim Assist Boost Settings]
-control = info
-color = #1E90FF
-collapsible = 1
+control         = info
+color           = #1E90FF
+collapsible     = 1
 shortdesc       = <<<MULTILINE
-Adjust in-game. Interactive configuration. Autosave.
+<u>To adjust in-game:</u>
 <u>Enable/Disable:</u> Hold aim and fire + press lethal button.
-<u>When enabled:</u> <u>Adjust Strength:</u> Hold aim and fire + press up or down dpad.
-
+<u>When enabled:</u> <u>Adjust Strength:</u> Hold aim and fire + press up or down dpad. Both firing and non-firing strength will adjust up and down together when using in-game adjustment.<br />
 <b>Adjust Polar Aim Assist boost strength:</b>
-2.0 while aiming and firing is not very annoying, but not very sticky.
-Stickiness starts around 4.5.
-6.0 is pretty sticky without being crazy.
-Adjust to your preference.
-
+2.0 while firing is very subtle, not annoying, but hardly sticky. Stickiness starts around 4.5. 6.0 is pretty sticky without being crazy. Adjust to your preference. The default values should be strong enough to give you a noticeable difference without drving you crazy.<br />
 MULTILINE
 
 [Aim Fire Strength]
-group = true
-control = spinboxf
-byteoffset = 10
-bitsize = 16
-default = 550
-minimum = 0
-maximum = 1000
-step = 100
-decimals = 2
-shortdesc = Aim Assist strength when firing (0.0 to 10.0).
+group           = true
+control         = spinboxf
+byteoffset      = 10
+bitsize         = 16
+default         = 550
+minimum         = 0
+maximum         = 1000
+step            = 100
+decimals        = 2
+shortdesc       = Aim Assist strength when firing (0.0 to 10.0).
 
 [Max Aim Strength]
-group = true
-control = spinboxf
-byteoffset = 12
-bitsize = 16
-default = 700
-minimum = 0
-maximum = 1500
-step = 100
-decimals = 2
-shortdesc = Aim Assist strength when not firing (0.0 to 15.0).
+group           = true
+control         = spinboxf
+byteoffset      = 12
+bitsize         = 16
+default         = 700
+minimum         = 0
+maximum         = 1500
+step            = 100
+decimals        = 2
+shortdesc       = Aim Assist strength when not firing (0.0 to 15.0).
 
 [Toggle ADS]
-group = true
-shortdesc       = <<<MULTILINE
-
-<b>Toggle ADS:</b>
-Adjust in-game. Interactive configuration. Autosave.
-<u>Toggle ADS:</u> Hold aim and fire + press tactical button.
-
-<u>Enabled:</u> Aim Assist boost and Anti-Recoil control only while holding aim down sight button. Use for long-distanced game modes where accuracy is needed and for game modes with lots of vehicles or parachuting where constant shake would be distracting.
-<u>Disabled:</u> Aim Assist boost and Anti-Recoil control affect hip fire too. Use for short-distanced game modes where quick kills are required, vehicle and parachuting shake will not distract you, and where accuracy of picking loot up and jumping through windows is not a big factor.
-
-<b>Note:</B> Disabled will negatively affect camera while driving, and will be shakey while running.
-
-MULTILINE
+group           = true
 byteoffset      = 27
 bitsize         = 8
 control         = checkbox
 default         = 1
 item            = Enable
+shortdesc       = <<<MULTILINE
+<br /><b>Toggle ADS:</b>
+<u>To toggle on/off in-game:</u> Hold aim and fire + press tactical button.<br/>
+<u>Enabled:</u> Aim Assist boost and Anti-Recoil control only while holding aim down sight button. Use for long-distanced game modes where accuracy is needed and for game modes with lots of vehicles or parachuting where constant shake would be distracting.
+<u>Not Enabled:</u> Aim Assist boost and Anti-Recoil control affect hip fire too. Use for short-distanced game modes where quick kills are required, vehicle and parachuting shake will not distract you, and where accuracy of picking loot up and jumping through windows is not a big factor.<br />
+<b>Note:</B> Disabled will negatively affect camera while driving, and will be shakey while running.
+MULTILINE
 
 [Sticknoise]
-group = true
-shortdesc       = <<<MULTILINE
-
-<b>Stick Noise (Dead Zone):</b>
-If you want to tweak this, set it to the max value of your sticks resting position values. Use the "Device Monitor" to examine them. Set to minimum if you want sticky aim even when resting. Increasing values high enough will eliminate screen shake when resting with toggle ADS disabled (but also removes stickiness).
-MULTILINE
+group           = true
 byteoffset      = 15
 bitsize         = 32
 control         = spinboxf
@@ -220,25 +198,23 @@ minimum         = 0
 maximum         = 2000
 step            = 1
 decimals        = 2
+shortdesc       = <<<MULTILINE
+<br /><b>Stick Noise (Dead Zone):</b>
+If you want to tweak this, set it to the max value of your sticks resting position values. Use the "Device Monitor" to examine them. Set to minimum if you want sticky aim even when resting. Increasing values high enough will eliminate screen shake when resting with toggle ADS disabled (but also removes stickiness).
+MULTILINE
 
 [Universal Anti-Recoil]
-control = info
-color = #1E90FF
-collapsible = 1
+color           = #1E90FF
+collapsible     = 1
+control         = info
 shortdesc       = <<<MULTILINE
-Adjust in-game. Interactive configuration. Autosave.
+<u>To adjust in-game:</u>
 <u>Horizontal:</u> Hold both triggers + press left or right dpad
 <u>Vertical:</u> <u>While aim assist boost is disabled:</u> Hold aim and fire + press up or down dpad
 MULTILINE
-control         = info
- 
-[Anti Recoil Vertical]
-group = true
-shortdesc       = <<<MULTILINE
 
-<b>Recoil Control:</b>
-Vertical recoil compensation
-MULTILINE
+[Anti Recoil Vertical]
+group           = true
 byteoffset      = 19
 bitsize         = 32
 control         = spinboxf
@@ -247,10 +223,13 @@ minimum         = -1000
 maximum         = 1000
 step            = 1
 decimals        = 1
- 
+shortdesc       = <<<MULTILINE
+<br /><b>Recoil Control:</b>
+Vertical recoil compensation
+MULTILINE
+
 [Anti Recoil Horizontal]
-group = true
-shortdesc       = Horizontal recoil compensation
+group           = true
 byteoffset      = 23
 bitsize         = 32
 control         = spinboxf
@@ -259,6 +238,7 @@ minimum         = -1000
 maximum         = 1000
 step            = 1
 decimals        = 1
+shortdesc       = Horizontal recoil compensation
 
 </cfgdesc>
 */
